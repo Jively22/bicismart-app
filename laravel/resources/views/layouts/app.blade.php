@@ -14,14 +14,15 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    BiciSmart
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -30,7 +31,25 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-
+                        @auth
+                            @if(Auth::user()->role === 'admin')
+                                <!-- Menú solo para administradores -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('bicicletas.index') }}">Bicicletas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('alquileres.index') }}">Alquileres</a>
+                                </li>
+                            @else
+                                <!-- Menú para usuarios normales -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Catálogo</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Mis Alquileres</a>
+                                </li>
+                            @endif
+                        @endauth
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -52,6 +71,9 @@
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
+                                    <span class="badge bg-{{ Auth::user()->role === 'admin' ? 'success' : 'primary' }} ms-1">
+                                        {{ Auth::user()->role }}
+                                    </span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
