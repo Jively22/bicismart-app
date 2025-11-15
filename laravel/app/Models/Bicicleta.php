@@ -30,4 +30,19 @@ class Bicicleta extends Model
     {
         return $this->hasMany(Alquiler::class, 'bicicleta_id');
     }
+    
+    public function mantenimientos()
+    {
+        return $this->hasMany(Mantenimiento::class, 'bicicleta_id');
+    }
+
+    public function ultimoMantenimiento()
+    {
+        return $this->hasOne(Mantenimiento::class, 'bicicleta_id')->latest('fecha_mantenimiento');
+    }
+
+    public function mantenimientosPendientes()
+    {
+        return $this->hasMany(Mantenimiento::class, 'bicicleta_id')->where('estado', 'pendiente');
+    }
 }

@@ -4,110 +4,178 @@
 
 @section('content')
 <div class="container-fluid">
-    <!-- Header -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Gestión de Mantenimientos</h1>
-        <a href="{{ route('mantenimientos.create') }}" class="btn btn-primary shadow-sm">
-            <i class="fas fa-plus me-2"></i>Nuevo Mantenimiento
-        </a>
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2><i class="fas fa-tools me-2"></i>Mantenimientos</h2>
+                <a href="{{ route('mantenimientos.create') }}" class="btn btn-success">
+                    <i class="fas fa-plus me-2"></i>Nuevo Mantenimiento
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ route('mantenimientos.index') }}">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Bicicleta</label>
+                        <select name="bicicleta_id" class="form-select">
+                            <option value="">Todas</option>
+                            @foreach($bicicletas as $bicicleta)
+                                <option value="{{ $bicicleta->id }}" {{ request('bicicleta_id') == $bicicleta->id ? 'selected' : '' }}>
+                                    {{ $bicicleta->modelo }} - {{ $bicicleta->numero_serie }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                            <option value="en_proceso" {{ request('estado') == 'en_proceso' ? 'selected' : '' }}>En Proceso</option>
+                            <option value="completado" {{ request('estado') == 'completado' ? 'selected' : '' }}>Completado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Tipo</label>
+                        <select name="tipo" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="preventivo" {{ request('tipo') == 'preventivo' ? 'selected' : '' }}>Preventivo</option>
+                            <option value="correctivo" {{ request('tipo') == 'correctivo' ? 'selected' : '' }}>Correctivo</option>
+                            <option value="revision" {{ request('tipo') == 'revision' ? 'selected' : '' }}>Revisión</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-fill">
+                                <i class="fas fa-search me-2"></i>Filtrar
+                            </button>
+                            <a href="{{ route('mantenimientos.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Tabla de Mantenimientos -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-white">
-            <h6 class="m-0 font-weight-bold text-primary">Lista de Mantenimientos</h6>
-        </div>
+    <div class="card">
         <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Bicicleta</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Fecha</th>
+                            <th>Costo</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($mantenimientos as $mantenimiento)
+                        <tr>
+                            <td>{{ $mantenimiento->id }}</td>
+                            <td>
+                                <strong>{{ $mantenimiento->bicicleta->modelo }}</strong><br>
+                                <small class="text-muted">{{ $mantenimiento->bicicleta->numero_serie }}</small>
+                            </td>
+                            <td>
+                                @if($mantenimiento->tipo == 'preventivo')
+                                    <span class="badge bg-info">Preventivo</span>
+                                @elseif($mantenimiento->tipo == 'correctivo')
+                                    <span class="badge bg-warning">Correctivo</span>
+                                @else
+                                    <span class="badge bg-secondary">Revisión</span>
+                                @endif
+                            </td>
+                            <td>{{ Str::limit($mantenimiento->descripcion, 50) }}</td>
+                            <td>{{ \Carbon\Carbon::parse($mantenimiento->fecha_mantenimiento)->format('d/m/Y') }}</td>
+                            <td>S/ {{ number_format($mantenimiento->costo, 2) }}</td>
+                            <td>
+                                @if($mantenimiento->estado == 'pendiente')
+                                    <span class="badge bg-warning">Pendiente</span>
+                                @elseif($mantenimiento->estado == 'en_proceso')
+                                    <span class="badge bg-info">En Proceso</span>
+                                @else
+                                    <span class="badge bg-success">Completado</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('mantenimientos.edit', $mantenimiento->id) }}" 
+                                       class="btn btn-sm btn-warning" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('mantenimientos.destroy', $mantenimiento->id) }}" 
+                                          method="POST" 
+                                          onsubmit="return confirm('¿Estás seguro de eliminar este mantenimiento?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
+                                <p class="text-muted">No hay mantenimientos registrados</p>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-            @if($mantenimientos->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-bordered" width="100%" cellspacing="0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Técnico</th>
-                                <th>Bicicleta</th>
-                                <th>Estado</th>
-                                <th>Precio</th>
-                                <th>Fecha Solicitud</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($mantenimientos as $mantenimiento)
-                            <tr>
-                                <td><strong>#{{ $mantenimiento->id }}</strong></td>
-                                <td>
-                                    <div class="fw-bold">{{ $mantenimiento->usuario->name }}</div>
-                                    <small class="text-muted">{{ $mantenimiento->usuario->email }}</small>
-                                </td>
-                                <td>
-                                    <div class="fw-bold">{{ $mantenimiento->tecnico->name }}</div>
-                                    <small class="text-muted">{{ $mantenimiento->tecnico->email }}</small>
-                                </td>
-                                <td>
-                                    <div class="fw-bold">{{ $mantenimiento->marca_bicicleta }}</div>
-                                    <small class="text-muted">{{ $mantenimiento->modelo_bicicleta }}</small>
-                                </td>
-                                <td>
-                                    @php
-                                        $estadoColors = [
-                                            'pendiente' => 'warning',
-                                            'aceptado' => 'info',
-                                            'en_proceso' => 'primary',
-                                            'completado' => 'success',
-                                            'cancelado' => 'danger'
-                                        ];
-                                    @endphp
-                                    <span class="badge bg-{{ $estadoColors[$mantenimiento->estado] ?? 'secondary' }}">
-                                        {{ ucfirst(str_replace('_', ' ', $mantenimiento->estado)) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    @if($mantenimiento->precio_pactado)
-                                        <strong>S/ {{ number_format($mantenimiento->precio_pactado, 2) }}</strong>
-                                    @else
-                                        <span class="text-muted">Por cotizar</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    {{ $mantenimiento->created_at->format('d/m/Y') }}
-                                    <br>
-                                    <small class="text-muted">{{ $mantenimiento->created_at->format('H:i') }}</small>
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ route('mantenimientos.show', $mantenimiento) }}" class="btn btn-info btn-sm" title="Ver detalles">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('mantenimientos.edit', $mantenimiento) }}" class="btn btn-warning btn-sm" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+            <!-- Paginación -->
+            <div class="d-flex justify-content-center mt-4">
+                {{ $mantenimientos->links() }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen de Estadísticas -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                    <h3>{{ $estadisticas['pendientes'] ?? 0 }}</h3>
+                    <p class="text-muted mb-0">Pendientes</p>
                 </div>
-            @else
-                <div class="text-center py-5">
-                    <i class="fas fa-tools fa-4x text-muted mb-4"></i>
-                    <h4 class="text-muted">No hay mantenimientos registrados</h4>
-                    <p class="text-muted mb-4">Comienza creando el primer mantenimiento</p>
-                    <a href="{{ route('mantenimientos.create') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-plus me-2"></i>Crear Primer Mantenimiento
-                    </a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-spinner fa-2x text-info mb-2"></i>
+                    <h3>{{ $estadisticas['en_proceso'] ?? 0 }}</h3>
+                    <p class="text-muted mb-0">En Proceso</p>
                 </div>
-            @endif
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                    <h3>{{ $estadisticas['completados'] ?? 0 }}</h3>
+                    <p class="text-muted mb-0">Completados</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

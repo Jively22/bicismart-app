@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mantenimiento;
-use App\Models\User;
+use App\Models\Bicicleta;
 use Illuminate\Http\Request;
 
 class MantenimientoController extends Controller
@@ -11,10 +11,36 @@ class MantenimientoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $mantenimientos = Mantenimiento::with(['usuario', 'tecnico'])->get();
-        return view('mantenimientos.index', compact('mantenimientos'));
+        $query = Mantenimiento::with('bicicleta');
+
+        // Filtros
+        if ($request->filled('bicicleta_id')) {
+            $query->where('bicicleta_id', $request->bicicleta_id);
+        }
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        $mantenimientos = $query->orderBy('fecha_mantenimiento', 'desc')->paginate(10);
+        
+        // Obtener bicicletas para el filtro
+        $bicicletas = Bicicleta::all();
+
+        // Estadísticas
+        $estadisticas = [
+            'pendientes' => Mantenimiento::where('estado', 'pendiente')->count(),
+            'en_proceso' => Mantenimiento::where('estado', 'en_proceso')->count(),
+            'completados' => Mantenimiento::where('estado', 'completado')->count(),
+        ];
+
+        return view('mantenimientos.index', compact('mantenimientos', 'bicicletas', 'estadisticas'));
     }
 
     /**
@@ -22,10 +48,8 @@ class MantenimientoController extends Controller
      */
     public function create()
     {
-        $usuarios = User::whereIn('role', ['cliente', 'empresa'])->get();
-        $tecnicos = User::where('role', 'admin')->get(); // O crear rol 'tecnico' si prefieres
-        
-        return view('mantenimientos.create', compact('usuarios', 'tecnicos'));
+        $bicicletas = Bicicleta::all();
+        return view('mantenimientos.create', compact('bicicletas'));
     }
 
     /**
@@ -33,29 +57,35 @@ class MantenimientoController extends Controller
      */
     public function store(Request $request)
     {
-        // Validación
-        $request->validate([
-            'usuario_id' => 'required|exists:users,id',
-            'tecnico_id' => 'required|exists:users,id',
-            'marca_bicicleta' => 'required|string|max:255',
-            'modelo_bicicleta' => 'required|string|max:255',
-            'descripcion_problema' => 'required|string|max:1000',
-            'precio_pactado' => 'nullable|numeric|min:0',
+        $validated = $request->validate([
+            'bicicleta_id' => 'required|exists:bicicletas,id',
+            'tipo' => 'required|in:preventivo,correctivo,revision',
+            'descripcion' => 'required|string|max:1000',
+            'fecha_mantenimiento' => 'required|date',
+            'costo' => 'required|numeric|min:0',
+            'estado' => 'required|in:pendiente,en_proceso,completado',
+            'tecnico_responsable' => 'nullable|string|max:255',
+            'observaciones' => 'nullable|string|max:1000',
+        ], [
+            'bicicleta_id.required' => 'Debe seleccionar una bicicleta',
+            'bicicleta_id.exists' => 'La bicicleta seleccionada no existe',
+            'tipo.required' => 'Debe seleccionar el tipo de mantenimiento',
+            'tipo.in' => 'El tipo de mantenimiento no es válido',
+            'descripcion.required' => 'La descripción es obligatoria',
+            'descripcion.max' => 'La descripción no puede exceder 1000 caracteres',
+            'fecha_mantenimiento.required' => 'La fecha de mantenimiento es obligatoria',
+            'fecha_mantenimiento.date' => 'La fecha no es válida',
+            'costo.required' => 'El costo es obligatorio',
+            'costo.numeric' => 'El costo debe ser un número',
+            'costo.min' => 'El costo no puede ser negativo',
+            'estado.required' => 'Debe seleccionar el estado',
+            'estado.in' => 'El estado seleccionado no es válido',
         ]);
 
-        // Crear el mantenimiento
-        Mantenimiento::create([
-            'usuario_id' => $request->usuario_id,
-            'tecnico_id' => $request->tecnico_id,
-            'marca_bicicleta' => $request->marca_bicicleta,
-            'modelo_bicicleta' => $request->modelo_bicicleta,
-            'descripcion_problema' => $request->descripcion_problema,
-            'estado' => 'pendiente',
-            'precio_pactado' => $request->precio_pactado,
-        ]);
+        Mantenimiento::create($validated);
 
         return redirect()->route('mantenimientos.index')
-            ->with('success', 'Mantenimiento creado exitosamente.');
+                         ->with('success', 'Mantenimiento registrado exitosamente');
     }
 
     /**
@@ -63,7 +93,6 @@ class MantenimientoController extends Controller
      */
     public function show(Mantenimiento $mantenimiento)
     {
-        $mantenimiento->load(['usuario', 'tecnico']);
         return view('mantenimientos.show', compact('mantenimiento'));
     }
 
@@ -72,10 +101,8 @@ class MantenimientoController extends Controller
      */
     public function edit(Mantenimiento $mantenimiento)
     {
-        $usuarios = User::whereIn('role', ['cliente', 'empresa'])->get();
-        $tecnicos = User::where('role', 'admin')->get();
-        
-        return view('mantenimientos.edit', compact('mantenimiento', 'usuarios', 'tecnicos'));
+        $bicicletas = Bicicleta::all();
+        return view('mantenimientos.edit', compact('mantenimiento', 'bicicletas'));
     }
 
     /**
@@ -83,22 +110,35 @@ class MantenimientoController extends Controller
      */
     public function update(Request $request, Mantenimiento $mantenimiento)
     {
-        // Validación
-        $request->validate([
-            'usuario_id' => 'required|exists:users,id',
-            'tecnico_id' => 'required|exists:users,id',
-            'marca_bicicleta' => 'required|string|max:255',
-            'modelo_bicicleta' => 'required|string|max:255',
-            'descripcion_problema' => 'required|string|max:1000',
-            'estado' => 'required|in:pendiente,aceptado,en_proceso,completado,cancelado',
-            'precio_pactado' => 'nullable|numeric|min:0',
+        $validated = $request->validate([
+            'bicicleta_id' => 'required|exists:bicicletas,id',
+            'tipo' => 'required|in:preventivo,correctivo,revision',
+            'descripcion' => 'required|string|max:1000',
+            'fecha_mantenimiento' => 'required|date',
+            'costo' => 'required|numeric|min:0',
+            'estado' => 'required|in:pendiente,en_proceso,completado',
+            'tecnico_responsable' => 'nullable|string|max:255',
+            'observaciones' => 'nullable|string|max:1000',
+        ], [
+            'bicicleta_id.required' => 'Debe seleccionar una bicicleta',
+            'bicicleta_id.exists' => 'La bicicleta seleccionada no existe',
+            'tipo.required' => 'Debe seleccionar el tipo de mantenimiento',
+            'tipo.in' => 'El tipo de mantenimiento no es válido',
+            'descripcion.required' => 'La descripción es obligatoria',
+            'descripcion.max' => 'La descripción no puede exceder 1000 caracteres',
+            'fecha_mantenimiento.required' => 'La fecha de mantenimiento es obligatoria',
+            'fecha_mantenimiento.date' => 'La fecha no es válida',
+            'costo.required' => 'El costo es obligatorio',
+            'costo.numeric' => 'El costo debe ser un número',
+            'costo.min' => 'El costo no puede ser negativo',
+            'estado.required' => 'Debe seleccionar el estado',
+            'estado.in' => 'El estado seleccionado no es válido',
         ]);
 
-        // Actualizar el mantenimiento
-        $mantenimiento->update($request->all());
+        $mantenimiento->update($validated);
 
         return redirect()->route('mantenimientos.index')
-            ->with('success', 'Mantenimiento actualizado exitosamente.');
+                         ->with('success', 'Mantenimiento actualizado exitosamente');
     }
 
     /**
@@ -109,6 +149,6 @@ class MantenimientoController extends Controller
         $mantenimiento->delete();
 
         return redirect()->route('mantenimientos.index')
-            ->with('success', 'Mantenimiento eliminado exitosamente.');
+                         ->with('success', 'Mantenimiento eliminado exitosamente');
     }
 }

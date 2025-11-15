@@ -210,7 +210,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link {{ request()->is('mantenimientos*') ? 'active' : '' }}" href="{{ route('mantenimientos.index') }}">
                         <i class="fas fa-tools nav-icon"></i>
                         Mantenimientos
                     </a>
