@@ -3,6 +3,7 @@
 use App\Http\Controllers\BicicletaController;
 use App\Http\Controllers\AlquilerController;
 use App\Http\Controllers\AlquilerCorporativoController;
+use App\Http\Controllers\MantenimientoController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,10 +24,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/alquiler-corporativo/confirmacion', [AlquilerCorporativoController::class, 'confirmacion'])->name('alquiler-corporativo.confirmacion');
 });
 
-// ✅ RUTAS PROTEGIDAS PARA ADMIN (esto ya existe)
+// ✅ RUTAS PROTEGIDAS PARA ADMIN (3 CRUDs completos)
 Route::middleware(['auth', 'admin'])->group(function () {
+    // CRUD 1: Bicicletas
     Route::resource('bicicletas', BicicletaController::class);
+    
+    // CRUD 2: Alquileres
     Route::resource('alquileres', AlquilerController::class);
+    
+    // ✅ CRUD 3: Mantenimientos (NUEVO)
+    Route::resource('mantenimientos', MantenimientoController::class);
 });
 
 // Ruta del dashboard
