@@ -1,137 +1,332 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiciSmart - Venta y Alquiler de Bicicletas</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary-color: #10b981;
-            --primary-dark: #059669;
-        }
-        
-        .hero-section {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 5rem 0;
-        }
-        
-        .service-card {
-            border: none;
-            border-radius: 15px;
-            transition: transform 0.3s ease;
-        }
-        
-        .service-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            padding: 0.75rem 2rem;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            border-color: var(--primary-dark);
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url('/') }}" style="color: #10b981;">
-                BiciSmart
-            </a>
-            
-            <div class="navbar-nav ms-auto">
-                @auth
-                    <a class="nav-link" href="{{ route('logout') }}"
-                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        Cerrar Sesión
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form>
-                @else
-                    <a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a>
-                    <a class="nav-link" href="{{ route('register') }}">Registrarse</a>
-                @endauth
-            </div>
-        </div>
-    </nav>
+@extends('layouts.app')
 
+@section('content')
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold mb-4">Tu viaje comienza con BiciSmart</h1>
-                    <p class="lead mb-4">Plataforma integral para comprar, alquilar y mantener tu bicicleta en Lima</p>
-                    <div class="d-flex gap-3">
-                        <a href="{{ route('alquiler-corporativo.create') }}" class="btn btn-light btn-lg">
-                            Alquiler Corporativo
-                        </a>
-                        @guest
-                        <a href="{{ route('register') }}" class="btn btn-outline-light btn-lg">
-                            Crear Cuenta
-                        </a>
-                        @endguest
+                    <h1 class="hero-title">Tu bicicleta ideal te espera. Pregúntale a nuestra IA</h1>
+                    <p class="hero-subtitle">
+                        Encuentra la bicicleta perfecta para ti con la ayuda de nuestro asistente inteligente Bici IA. 
+                        Venta, alquiler y mantenimiento en Lima, Perú.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <button class="btn btn-light btn-lg px-4 py-2">
+                            <i class="fas fa-robot me-2"></i>Habla con Bici IA
+                        </button>
+                        <button class="btn btn-outline-light btn-lg px-4 py-2">
+                            <i class="fas fa-bicycle me-2"></i>Ver Catálogo
+                        </button>
                     </div>
                 </div>
                 <div class="col-lg-6 text-center">
-                    <i class="fas fa-bicycle fa-8x opacity-75"></i>
+                    <div class="hero-image mt-5 mt-lg-0">
+                        <i class="fas fa-bicycle fa-10x text-white-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section class="py-5">
+    <!-- Bicicletas Destacadas Section -->
+    <section id="catalogo" class="py-5 bg-white">
         <div class="container">
-            <div class="row text-center mb-5">
-                <div class="col">
-                    <h2 class="fw-bold">Nuestros Servicios</h2>
-                    <p class="text-muted">Todo lo que necesitas en un solo lugar</p>
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="display-5 fw-bold mb-3">Bicicletas Destacadas</h2>
+                    <p class="lead text-muted">Descubre nuestra selección de las mejores bicicletas disponibles para comprar y alquilar.</p>
                 </div>
             </div>
-            
+
             <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card service-card shadow-sm h-100">
-                        <div class="card-body text-center p-4">
-                            <i class="fas fa-shopping-cart fa-3x mb-3" style="color: #10b981;"></i>
-                            <h5 class="card-title">Compra de Bicicletas</h5>
-                            <p class="card-text">Encuentra la bicicleta perfecta para ti entre nuestro catálogo amplio.</p>
+                <!-- Bicicleta 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title fw-bold">Trek X-Caliber 8</h5>
+                                    <p class="text-muted mb-2">Trek</p>
+                                </div>
+                                <span class="badge bg-success">4.8 ★</span>
+                            </div>
+                            <p class="card-text text-muted mb-4">
+                                Bicicleta de montaña profesional diseñada para terrenos difíciles y senderos extremos.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <small class="text-muted">Venta:</small>
+                                    <h6 class="mb-0 text-success">S/ 3,200</h6>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Alquiler/h:</small>
+                                    <h6 class="mb-0 text-primary">S/ 48.00</h6>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-shopping-cart me-2"></i>Comprar
+                                </button>
+                                <button class="btn btn-outline-primary">
+                                    <i class="fas fa-calendar me-2"></i>Alquilar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-md-4">
-                    <div class="card service-card shadow-sm h-100">
-                        <div class="card-body text-center p-4">
-                            <i class="fas fa-calendar-alt fa-3x mb-3" style="color: #10b981;"></i>
-                            <h5 class="card-title">Alquiler Flexible</h5>
-                            <p class="card-text">Individual por horas/días o corporativo para eventos empresariales.</p>
-                            <a href="{{ route('alquiler-corporativo.create') }}" class="btn btn-outline-primary mt-2">Solicitar</a>
+
+                <!-- Bicicleta 2 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title fw-bold">Specialized Sirrus X 3.0</h5>
+                                    <p class="text-muted mb-2">Specialized</p>
+                                </div>
+                                <span class="badge bg-success">4.3 ★</span>
+                            </div>
+                            <p class="card-text text-muted mb-4">
+                                Perfecta para uso ágil en la ciudad. Cómoda, rápida y versátil.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <small class="text-muted">Venta:</small>
+                                    <h6 class="mb-0 text-success">S/ 2,400</h6>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Alquiler/h:</small>
+                                    <h6 class="mb-0 text-primary">S/ 35.00</h6>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-shopping-cart me-2"></i>Comprar
+                                </button>
+                                <button class="btn btn-outline-primary">
+                                    <i class="fas fa-calendar me-2"></i>Alquilar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-md-4">
-                    <div class="card service-card shadow-sm h-100">
+
+                <!-- Bicicleta 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title fw-bold">Giant TCR Advanced 2</h5>
+                                    <p class="text-muted mb-2">Giant</p>
+                                </div>
+                                <span class="badge bg-success">4.5 ★</span>
+                            </div>
+                            <p class="card-text text-muted mb-4">
+                                Bicicleta de carretera de alta rendimiento para ciclistas competitivos.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <small class="text-muted">Venta:</small>
+                                    <h6 class="mb-0 text-success">S/ 4,800</h6>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Alquiler/h:</small>
+                                    <h6 class="mb-0 text-primary">S/ 65.00</h6>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-shopping-cart me-2"></i>Comprar
+                                </button>
+                                <button class="btn btn-outline-primary">
+                                    <i class="fas fa-calendar me-2"></i>Alquilar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-bicycle me-2"></i>Ver Todas las Bicicletas
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicio de Mantenimiento Section -->
+    <section id="mantenimiento" class="py-5 bg-light">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="display-5 fw-bold mb-3">Servicio de Mantenimiento</h2>
+                    <p class="lead text-muted">
+                        Mantén tu bicicleta en perfecto estado con nuestros técnicos certificados. 
+                        Disponible para cualquier marca, haya comprado o alquilado con nosotros.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <!-- Servicio 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
                         <div class="card-body text-center p-4">
-                            <i class="fas fa-tools fa-3x mb-3" style="color: #10b981;"></i>
-                            <h5 class="card-title">Mantenimiento</h5>
-                            <p class="card-text">Servicio técnico especializado con los mejores profesionales.</p>
+                            <div class="mb-4">
+                                <i class="fas fa-tools fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title fw-bold mb-3">Mantenimiento General</h5>
+                            <p class="card-text text-muted mb-4">
+                                Revisión completa, limpieza, lubricación y ajuste general de tu bicicleta.
+                            </p>
+                            <div class="mb-4">
+                                <h4 class="text-success fw-bold">S/ 80</h4>
+                                <small class="text-muted">Precio base</small>
+                            </div>
+                            <button class="btn btn-primary w-100">
+                                <i class="fas fa-calendar-plus me-2"></i>Agendar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 2 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="fas fa-search fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title fw-bold mb-3">Diagnóstico Técnico</h5>
+                            <p class="card-text text-muted mb-4">
+                                Evaluación profesional del estado de tu bicicleta y diagnóstico de problemas.
+                            </p>
+                            <div class="mb-4">
+                                <h4 class="text-success fw-bold">S/ 50</h4>
+                                <small class="text-muted">Precio base</small>
+                            </div>
+                            <button class="btn btn-primary w-100">
+                                <i class="fas fa-calendar-plus me-2"></i>Agendar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="fas fa-cogs fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title fw-bold mb-3">Reparación Especializada</h5>
+                            <p class="card-text text-muted mb-4">
+                                Arreglos específicos de suspensión, frenos, transmisión y componentes especializados.
+                            </p>
+                            <div class="mb-4">
+                                <h4 class="text-success fw-bold">S/ 120</h4>
+                                <small class="text-muted">Precio base</small>
+                            </div>
+                            <button class="btn btn-primary w-100">
+                                <i class="fas fa-calendar-plus me-2"></i>Agendar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nuestros Técnicos -->
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h3 class="fw-bold mb-3">Nuestros Técnicos</h3>
+                    <p class="text-muted">Profesionales certificados listos para ayudarte</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Técnico 1 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-user-circle fa-4x text-primary"></i>
+                            </div>
+                            <h6 class="card-title fw-bold mb-1">Jorge Martínez</h6>
+                            <div class="mb-3">
+                                <span class="badge bg-success">4.9 ★</span>
+                            </div>
+                            <p class="card-text small text-muted mb-3">
+                                Especialista en MTB y suspensiones
+                            </p>
+                            <button class="btn btn-outline-primary btn-sm w-100">
+                                Ver Disponibilidad
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Técnico 2 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-user-circle fa-4x text-primary"></i>
+                            </div>
+                            <h6 class="card-title fw-bold mb-1">Andrea Castillo</h6>
+                            <div class="mb-3">
+                                <span class="badge bg-success">4.8 ★</span>
+                            </div>
+                            <p class="card-text small text-muted mb-3">
+                                Especialista en bicicletas urbanas
+                            </p>
+                            <button class="btn btn-outline-primary btn-sm w-100">
+                                Ver Disponibilidad
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Técnico 3 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-user-circle fa-4x text-primary"></i>
+                            </div>
+                            <h6 class="card-title fw-bold mb-1">Luis Vargas</h6>
+                            <div class="mb-3">
+                                <span class="badge bg-success">4.7 ★</span>
+                            </div>
+                            <p class="card-text small text-muted mb-3">
+                                Especialista en transmisiones
+                            </p>
+                            <button class="btn btn-outline-primary btn-sm w-100">
+                                Ver Disponibilidad
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Técnico 4 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-user-circle fa-4x text-primary"></i>
+                            </div>
+                            <h6 class="card-title fw-bold mb-1">Carmen López</h6>
+                            <div class="mb-3">
+                                <span class="badge bg-success">4.4 ★</span>
+                            </div>
+                            <p class="card-text small text-muted mb-3">
+                                Especialista en frenos y ruedas
+                            </p>
+                            <button class="btn btn-outline-primary btn-sm w-100">
+                                Ver Disponibilidad
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -139,22 +334,51 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
+    <!-- Alquiler Corporativo Section -->
+    <section id="alquiler-corporativo" class="py-5 bg-white">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>BiciSmart</h5>
-                    <p>Tu plataforma de confianza para movilidad sostenible en Lima.</p>
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="display-5 fw-bold mb-4">Alquiler Corporativo de Bicicletas</h2>
+                    <p class="lead text-muted mb-4">
+                        Perfecto para eventos empresariales, team building y actividades corporativas en Lima.
+                    </p>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Flotas completas para empresas</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Seguros incluidos</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Asistencia técnica en sitio</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Flexibilidad de horarios</li>
+                    </ul>
+                    <a href="{{ route('alquiler-corporativo.create') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-briefcase me-2"></i>Solicitar Cotización
+                    </a>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <p>&copy; 2025 BiciSmart. Todos los derechos reservados.</p>
+                <div class="col-lg-6 text-center">
+                    <div class="corporate-image">
+                        <i class="fas fa-users fa-10x text-primary opacity-25"></i>
+                    </div>
                 </div>
             </div>
         </div>
-    </footer>
+    </section>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <!-- CTA Section -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-12">
+                    <h3 class="display-6 fw-bold mb-3">¿Listo para empezar tu aventura?</h3>
+                    <p class="lead mb-4">Únete a nuestra comunidad de ciclistas en Lima</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ route('register') }}" class="btn btn-light btn-lg px-4">
+                            <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                        </a>
+                        <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg px-4">
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection

@@ -33,7 +33,7 @@ class Bicicleta extends Model
     
     public function mantenimientos()
     {
-        return $this->hasMany(Mantenimiento::class, 'bicicleta_id');
+        return $this->hasMany(Mantenimiento::class);
     }
 
     public function ultimoMantenimiento()

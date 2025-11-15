@@ -7,29 +7,19 @@ use Illuminate\Http\Request;
 
 class BicicletaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $bicicletas = Bicicleta::all();
+        $bicicletas = Bicicleta::paginate(10);
         return view('bicicletas.index', compact('bicicletas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('bicicletas.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validación
         $request->validate([
             'marca' => 'required|string|max:255',
             'modelo' => 'required|string|max:255',
@@ -44,28 +34,18 @@ class BicicletaController extends Controller
             ->with('success', 'Bicicleta creada exitosamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Bicicleta $bicicleta)
     {
         return view('bicicletas.show', compact('bicicleta'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Bicicleta $bicicleta)
     {
         return view('bicicletas.edit', compact('bicicleta'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Bicicleta $bicicleta)
     {
-        // Validación
         $request->validate([
             'marca' => 'required|string|max:255',
             'modelo' => 'required|string|max:255',
@@ -80,9 +60,6 @@ class BicicletaController extends Controller
             ->with('success', 'Bicicleta actualizada exitosamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Bicicleta $bicicleta)
     {
         $bicicleta->delete();

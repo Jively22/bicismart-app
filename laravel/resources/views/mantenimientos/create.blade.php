@@ -1,84 +1,77 @@
-@extends('layouts.dashboard')
-
-@section('page-title', 'Crear Mantenimiento')
+@extends('layouts.app')
 
 @section('content')
 <div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow">
-                <div class="card-header bg-white">
-                    <h4 class="mb-0">Crear Nuevo Mantenimiento</h4>
+    <div class="row">
+        <div class="col-xl-8 col-lg-10 mx-auto">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0 fw-bold text-primary">
+                            <i class="fas fa-tools me-2"></i>Nuevo Mantenimiento
+                        </h4>
+                        <a href="{{ route('mantenimientos.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Volver
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('mantenimientos.store') }}">
+                    <form action="{{ route('mantenimientos.store') }}" method="POST">
                         @csrf
                         
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="usuario_id" class="form-label">Cliente *</label>
-                                <select class="form-select" name="usuario_id" id="usuario_id" required>
-                                    <option value="">Seleccionar cliente</option>
-                                    @foreach($usuarios as $usuario)
-                                        <option value="{{ $usuario->id }}" {{ old('usuario_id') == $usuario->id ? 'selected' : '' }}>
-                                            {{ $usuario->name }} ({{ $usuario->email }}) - {{ $usuario->role }}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="bicicleta_id" class="form-label">Bicicleta *</label>
+                                <select name="bicicleta_id" id="bicicleta_id" class="form-select" required>
+                                    <option value="">Seleccionar bicicleta</option>
+                                    @foreach($bicicletas as $bicicleta)
+                                        <option value="{{ $bicicleta->id }}">
+                                            {{ $bicicleta->modelo }} - {{ $bicicleta->marca ?? 'Sin marca' }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                             
-                            <div class="col-md-6">
-                                <label for="tecnico_id" class="form-label">Técnico *</label>
-                                <select class="form-select" name="tecnico_id" id="tecnico_id" required>
-                                    <option value="">Seleccionar técnico</option>
-                                    @foreach($tecnicos as $tecnico)
-                                        <option value="{{ $tecnico->id }}" {{ old('tecnico_id') == $tecnico->id ? 'selected' : '' }}>
-                                            {{ $tecnico->name }} ({{ $tecnico->email }})
-                                        </option>
-                                    @endforeach
+                            <div class="col-md-6 mb-3">
+                                <label for="tipo" class="form-label">Tipo de Mantenimiento *</label>
+                                <select name="tipo" id="tipo" class="form-select" required>
+                                    <option value="">Seleccionar tipo</option>
+                                    <option value="preventivo">Preventivo</option>
+                                    <option value="correctivo">Correctivo</option>
+                                    <option value="urgente">Urgente</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="marca_bicicleta" class="form-label">Marca de la Bicicleta *</label>
-                                <input type="text" class="form-control" name="marca_bicicleta" id="marca_bicicleta"
-                                       value="{{ old('marca_bicicleta') }}" required
-                                       placeholder="Ej: Trek, Specialized, Giant">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fecha_inicio" class="form-label">Fecha de Inicio *</label>
+                                <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" required>
                             </div>
                             
-                            <div class="col-md-6">
-                                <label for="modelo_bicicleta" class="form-label">Modelo de la Bicicleta *</label>
-                                <input type="text" class="form-control" name="modelo_bicicleta" id="modelo_bicicleta"
-                                       value="{{ old('modelo_bicicleta') }}" required
-                                       placeholder="Ej: Marlin 5, Sirrus X, Escape 3">
+                            <div class="col-md-6 mb-3">
+                                <label for="fecha_fin_prevista" class="form-label">Fecha Fin Prevista</label>
+                                <input type="date" name="fecha_fin_prevista" id="fecha_fin_prevista" class="form-control">
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label for="descripcion_problema" class="form-label">Descripción del Problema *</label>
-                                <textarea class="form-control" name="descripcion_problema" id="descripcion_problema" 
-                                          rows="4" required placeholder="Describe el problema o servicio requerido...">{{ old('descripcion_problema') }}</textarea>
-                            </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción del Mantenimiento *</label>
+                            <textarea name="descripcion" id="descripcion" class="form-control" rows="4" placeholder="Describa los trabajos a realizar..." required></textarea>
                         </div>
 
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="precio_pactado" class="form-label">Precio Pactado (S/)</label>
-                                <input type="number" step="0.01" class="form-control" name="precio_pactado" id="precio_pactado"
-                                       value="{{ old('precio_pactado') }}"
-                                       placeholder="0.00">
-                                <div class="form-text">Dejar en blanco si aún no se ha cotizado</div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="costo_estimado" class="form-label">Costo Estimado (S/)</label>
+                            <input type="number" step="0.01" name="costo_estimado" id="costo_estimado" class="form-control" placeholder="0.00">
                         </div>
 
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save me-2"></i>Crear Mantenimiento
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="reset" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-redo me-1"></i> Limpiar
                             </button>
-                            <a href="{{ route('mantenimientos.index') }}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Crear Mantenimiento
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -87,3 +80,13 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fecha_inicio').min = today;
+        document.getElementById('fecha_fin_prevista').min = today;
+    });
+</script>
+@endpush
