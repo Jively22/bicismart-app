@@ -1,0 +1,1 @@
+<h1>Historial de compras placeholder</h1>

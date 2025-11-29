@@ -1,0 +1,1 @@
+<h1>Catalogo bicicletas placeholder</h1>

@@ -1,0 +1,3 @@
+En tu archivo app/Http/Kernel.php agrega en $routeMiddleware:
+
+    'admin' => \App\Http\Middleware\AdminMiddleware::class,
