@@ -17,7 +17,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/alquiler-corporativo', [AlquilerCorporativoController::class, 'create'])->name('alquiler-corporativo.create');
-Route::post('/alquiler-corporativo', [AlquilerCorporativoController::class, 'store'])->name('alquiler-corporativo.store');
+Route::post('/alquiler-corporativo', [App\Http\Controllers\AlquilerCorporativoController::class, 'store'])->name('alquiler-corporativo.store');
 Route::get('/alquiler-corporativo/confirmacion', [AlquilerCorporativoController::class, 'confirmacion'])->name('alquiler-corporativo.confirmacion');
 
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo');
