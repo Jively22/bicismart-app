@@ -14,6 +14,7 @@ class Alquiler extends Model
     protected $fillable = [
         'user_id',
         'bicicleta_id',
+        'tipo',
         'fecha_inicio',
         'fecha_fin',
         'precio_total',

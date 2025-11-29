@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Bicicleta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BicicletaController extends Controller
 {
     // Catálogo público
     public function catalogo()
     {
-        $bicicletas = Bicicleta::where('estado', 'disponible')->paginate(9);
+        $bicicletas = Bicicleta::where('estado', 'disponible')->get();
         return view('bicicletas.catalogo', compact('bicicletas'));
     }
 
@@ -19,10 +20,10 @@ class BicicletaController extends Controller
         return view('bicicletas.show_public', compact('bicicleta'));
     }
 
-    // CRUD Admin
+    // CRUD admin
     public function index()
     {
-        $bicicletas = Bicicleta::orderBy('id', 'desc')->paginate(15);
+        $bicicletas = Bicicleta::orderBy('id', 'desc')->get();
         return view('bicicletas.index', compact('bicicletas'));
     }
 
@@ -34,50 +35,63 @@ class BicicletaController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required',
             'tipo' => 'required|in:venta,alquiler,mixto',
-            'precio_venta' => 'nullable|numeric|min:0',
-            'precio_alquiler_hora' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'descripcion' => 'nullable|string',
-            'estado' => 'required|in:disponible,no_disponible',
+            'precio_venta' => 'nullable|numeric',
+            'precio_alquiler_hora' => 'nullable|numeric',
+            'stock' => 'required|integer',
+            'descripcion' => 'nullable',
+            'estado' => 'required',
+            'foto' => 'nullable|image',
         ]);
+
+        if ($request->hasFile('foto')) {
+            $data['foto'] = $request->file('foto')->store('images/bicicletas', 'public');
+        }
 
         Bicicleta::create($data);
 
-        return redirect()->route('bicicletas.index')
-            ->with('success', 'Bicicleta creada correctamente.');
+        return redirect()->route('bicicletas.index')->with('success', 'Bicicleta creada correctamente.');
     }
 
-    public function edit(Bicicleta $bicicleta)
+    public function edit($id)
     {
+        $bicicleta = Bicicleta::findOrFail($id);
         return view('bicicletas.edit', compact('bicicleta'));
     }
 
-    public function update(Request $request, Bicicleta $bicicleta)
+    public function update(Request $request, $id)
     {
+        $bicicleta = Bicicleta::findOrFail($id);
+
         $data = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required',
             'tipo' => 'required|in:venta,alquiler,mixto',
-            'precio_venta' => 'nullable|numeric|min:0',
-            'precio_alquiler_hora' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'descripcion' => 'nullable|string',
-            'estado' => 'required|in:disponible,no_disponible',
+            'precio_venta' => 'nullable|numeric',
+            'precio_alquiler_hora' => 'nullable|numeric',
+            'stock' => 'required|integer',
+            'descripcion' => 'nullable',
+            'estado' => 'required',
+            'foto' => 'nullable|image',
         ]);
+
+        if ($request->hasFile('foto')) {
+            if ($bicicleta->foto && Storage::disk('public')->exists($bicicleta->foto)) {
+                Storage::disk('public')->delete($bicicleta->foto);
+            }
+            $data['foto'] = $request->file('foto')->store('images/bicicletas', 'public');
+        }
 
         $bicicleta->update($data);
 
-        return redirect()->route('bicicletas.index')
-            ->with('success', 'Bicicleta actualizada correctamente.');
+        return redirect()->route('bicicletas.index')->with('success', 'Bicicleta actualizada correctamente.');
     }
 
-    public function destroy(Bicicleta $bicicleta)
+    public function destroy($id)
     {
-        // delete simple, cuidando integridad referencial vía ON DELETE RESTRICT o SET NULL
+        $bicicleta = Bicicleta::findOrFail($id);
         $bicicleta->delete();
 
-        return redirect()->route('bicicletas.index')
-            ->with('success', 'Bicicleta eliminada correctamente.');
+        return redirect()->route('bicicletas.index')->with('success', 'Bicicleta eliminada correctamente.');
     }
 }

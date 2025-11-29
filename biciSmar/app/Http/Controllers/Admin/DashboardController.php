@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Bicicleta;
 use App\Models\Alquiler;
-use App\Models\Mantenimiento;
 use App\Models\Order;
-use App\Models\User;
+use App\Models\Mantenimiento;
 
 class DashboardController extends Controller
 {
@@ -15,16 +14,14 @@ class DashboardController extends Controller
     {
         $totalBicicletas = Bicicleta::count();
         $totalAlquileres = Alquiler::count();
-        $totalMantenimientos = Mantenimiento::count();
+        $totalServicios = Mantenimiento::count();
         $totalVentas = Order::sum('total');
-        $totalUsuarios = User::count();
 
         return view('admin.dashboard', compact(
             'totalBicicletas',
             'totalAlquileres',
-            'totalMantenimientos',
-            'totalVentas',
-            'totalUsuarios'
+            'totalServicios',
+            'totalVentas'
         ));
     }
 }

@@ -9,29 +9,13 @@ class MantenimientoSeeder extends Seeder
 {
     public function run(): void
     {
-        // --- Servicios oficiales (internos) ---
+        // Internos
         Mantenimiento::create([
             'nombre' => 'Ajuste general de bicicleta',
             'descripcion' => 'Incluye ajuste de frenos, cambios, lubricación y revisión de seguridad.',
             'precio' => 45.00,
             'tipo_servicio' => 'interno',
             'tecnico' => 'BiciSmart - Técnico Certificado',
-        ]);
-
-        Mantenimiento::create([
-            'nombre' => 'Alineación y centrado de ruedas',
-            'descripcion' => 'Corrección del aro, radios y balance de la rueda.',
-            'precio' => 35.00,
-            'tipo_servicio' => 'interno',
-            'tecnico' => 'BiciSmart - Técnico Certificado',
-        ]);
-
-        Mantenimiento::create([
-            'nombre' => 'Cambio de cadena',
-            'descripcion' => 'Instalación de cadena nueva, limpieza y lubricación del sistema.',
-            'precio' => 28.00,
-            'tipo_servicio' => 'interno',
-            'tecnico' => 'BiciSmart - Técnico Senior',
         ]);
 
         Mantenimiento::create([
@@ -42,7 +26,7 @@ class MantenimientoSeeder extends Seeder
             'tecnico' => 'BiciSmart - Especialista Premium',
         ]);
 
-        // --- Servicios ofrecidos por técnicos externos ---
+        // Externos
         Mantenimiento::create([
             'nombre' => 'Cambio de llanta / tubo',
             'descripcion' => 'Servicio rápido para pinchazos y desgaste de llantas.',
@@ -57,14 +41,6 @@ class MantenimientoSeeder extends Seeder
             'precio' => 15.00,
             'tipo_servicio' => 'externo',
             'tecnico' => 'Rodrigo Bike Solutions',
-        ]);
-
-        Mantenimiento::create([
-            'nombre' => 'Diagnóstico y revisión general',
-            'descripcion' => 'Evaluación del estado general de la bicicleta con informe de fallas.',
-            'precio' => 22.00,
-            'tipo_servicio' => 'externo',
-            'tecnico' => 'BikeDoctor Perú',
         ]);
 
         Mantenimiento::create([

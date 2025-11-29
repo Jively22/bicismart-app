@@ -9,22 +9,13 @@ class Mantenimiento extends Model
 {
     use HasFactory;
 
+    protected $table = 'mantenimientos';
+
     protected $fillable = [
-        'user_id',
-        'bicicleta_id',
-        'tipo_servicio',
+        'nombre',
         'descripcion',
-        'fecha_programada',
-        'estado',
+        'precio',
+        'tipo_servicio',
+        'tecnico',
     ];
-
-    public function bicicleta()
-    {
-        return $this->belongsTo(Bicicleta::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

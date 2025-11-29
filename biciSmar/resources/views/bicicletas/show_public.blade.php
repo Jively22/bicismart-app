@@ -1,34 +1,54 @@
 @extends('layouts.app')
 
-@section('title', $bicicleta->nombre)
-
 @section('content')
-<div class="container py-4">
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <img src="{{ $bicicleta->imagen ?? 'https://images.pexels.com/photos/276517/pexels-photo-276517.jpeg' }}" 
-                 alt="{{ $bicicleta->nombre }}" class="img-fluid rounded-4 shadow-sm">
-        </div>
-        <div class="col-md-6">
-            <h1 class="fw-bold text-success">{{ $bicicleta->nombre }}</h1>
-            <p class="small text-muted">{{ ucfirst($bicicleta->tipo) }}</p>
-            <p>{{ $bicicleta->descripcion }}</p>
+<div class="grid md:grid-cols-2 gap-8">
+    <div>
+        @if($bicicleta->foto)
+            <img src="{{ asset('storage/'.$bicicleta->foto) }}" alt="{{ $bicicleta->nombre }}"
+                 class="w-full rounded-2xl shadow">
+        @else
+            <div class="w-full h-64 bg-gray-200 rounded flex items-center justify-center">
+                <span class="text-gray-500">Sin imagen</span>
+            </div>
+        @endif
+    </div>
+    <div>
+        <h1 class="text-3xl font-bold text-green-700 mb-3">{{ $bicicleta->nombre }}</h1>
+        <p class="text-gray-700 mb-4">{{ $bicicleta->descripcion }}</p>
+
+        <div class="mb-4 space-y-1">
             @if($bicicleta->precio_venta)
-                <p>Precio venta: <strong>S/ {{ number_format($bicicleta->precio_venta,2) }}</strong></p>
+                <p><strong>Precio de venta:</strong> S/ {{ number_format($bicicleta->precio_venta, 2) }}</p>
             @endif
             @if($bicicleta->precio_alquiler_hora)
-                <p>Alquiler por hora: <strong>S/ {{ number_format($bicicleta->precio_alquiler_hora,2) }}</strong></p>
+                <p><strong>Precio alquiler por hora:</strong> S/ {{ number_format($bicicleta->precio_alquiler_hora, 2) }}</p>
             @endif
-            <p>Stock disponible: <strong>{{ $bicicleta->stock }}</strong></p>
-
-            @if($bicicleta->precio_venta)
-                <form action="{{ route('cart.add', $bicicleta) }}" method="POST" class="d-flex align-items-center mt-3">
-                    @csrf
-                    <input type="number" name="cantidad" value="1" min="1" class="form-control w-auto me-2">
-                    <button type="submit" class="btn btn-success">Agregar al carrito</button>
-                </form>
-            @endif
+            <p><strong>Tipo:</strong> {{ ucfirst($bicicleta->tipo) }}</p>
+            <p><strong>Stock:</strong> {{ $bicicleta->stock }}</p>
         </div>
+
+        @if($bicicleta->precio_venta)
+            <form action="{{ route('cart.add', $bicicleta->id) }}" method="POST" class="inline-block">
+                @csrf
+                <button class="bg-green-600 text-white px-6 py-2 rounded-lg mr-2">
+                    Añadir al carrito
+                </button>
+            </form>
+        @endif
+
+        @auth
+            @if(auth()->user()->tipo_cliente === 'individual' && in_array($bicicleta->tipo, ['alquiler','mixto']))
+                <a href="{{ route('alquileres.create.individual') }}"
+                   class="inline-block border border-green-600 text-green-700 px-6 py-2 rounded-lg">
+                    Alquilar (individual)
+                </a>
+            @elseif(auth()->user()->tipo_cliente === 'empresa' && in_array($bicicleta->tipo, ['alquiler','mixto']))
+                <a href="{{ route('alquileres.create.corporativo') }}"
+                   class="inline-block border border-green-600 text-green-700 px-6 py-2 rounded-lg">
+                    Alquiler corporativo
+                </a>
+            @endif
+        @endauth
     </div>
 </div>
 @endsection

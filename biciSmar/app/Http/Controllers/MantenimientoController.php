@@ -14,7 +14,7 @@ class MantenimientoController extends Controller
         return view('mantenimientos.public', compact('mantenimientos'));
     }
 
-    // Listado admin
+    // Admin
     public function index()
     {
         $mantenimientos = Mantenimiento::orderBy('id', 'desc')->get();
@@ -28,7 +28,7 @@ class MantenimientoController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'nombre' => 'required',
             'descripcion' => 'nullable',
             'precio' => 'required|numeric',
@@ -36,10 +36,9 @@ class MantenimientoController extends Controller
             'tecnico' => 'required',
         ]);
 
-        Mantenimiento::create($request->all());
+        Mantenimiento::create($data);
 
-        return redirect()->route('mantenimientos.index')
-            ->with('success', 'Servicio creado correctamente.');
+        return redirect()->route('mantenimientos.index')->with('success', 'Servicio creado.');
     }
 
     public function edit($id)
@@ -50,7 +49,9 @@ class MantenimientoController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $mantenimiento = Mantenimiento::findOrFail($id);
+
+        $data = $request->validate([
             'nombre' => 'required',
             'descripcion' => 'nullable',
             'precio' => 'required|numeric',
@@ -58,11 +59,9 @@ class MantenimientoController extends Controller
             'tecnico' => 'required',
         ]);
 
-        $mantenimiento = Mantenimiento::findOrFail($id);
-        $mantenimiento->update($request->all());
+        $mantenimiento->update($data);
 
-        return redirect()->route('mantenimientos.index')
-            ->with('success', 'Servicio actualizado correctamente.');
+        return redirect()->route('mantenimientos.index')->with('success', 'Servicio actualizado.');
     }
 
     public function destroy($id)
@@ -70,7 +69,13 @@ class MantenimientoController extends Controller
         $mantenimiento = Mantenimiento::findOrFail($id);
         $mantenimiento->delete();
 
-        return redirect()->route('mantenimientos.index')
-            ->with('success', 'Servicio eliminado correctamente.');
+        return redirect()->route('mantenimientos.index')->with('success', 'Servicio eliminado.');
+    }
+
+    // Historial de mantenimientos del usuario (si se usa en el futuro)
+    public function misMantenimientos()
+    {
+        // Placeholder: dependería de la tabla de solicitudes de mantenimiento
+        return view('mantenimientos.mis');
     }
 }

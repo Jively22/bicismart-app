@@ -16,8 +16,8 @@ class Bicicleta extends Model
         'precio_alquiler_hora',
         'stock',
         'descripcion',
-        'imagen',
         'estado',
+        'foto',
     ];
 
     public function alquileres()
@@ -25,8 +25,8 @@ class Bicicleta extends Model
         return $this->hasMany(Alquiler::class);
     }
 
-    public function mantenimientos()
+    public function orderItems()
     {
-        return $this->hasMany(Mantenimiento::class);
+        return $this->hasMany(OrderItem::class);
     }
 }

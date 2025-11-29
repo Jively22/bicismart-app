@@ -14,7 +14,7 @@ return new class extends Migration
             $table->text('descripcion')->nullable();
             $table->decimal('precio', 8, 2);
             $table->string('tipo_servicio'); // interno / externo
-            $table->string('tecnico'); // nombre del técnico o empresa
+            $table->string('tecnico');
             $table->timestamps();
         });
     }

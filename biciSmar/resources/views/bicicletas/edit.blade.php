@@ -1,57 +1,69 @@
 @extends('layouts.app')
 
-@section('title','Editar bicicleta')
-
 @section('content')
-<div class="container py-4">
-    <h1 class="fw-bold text-success mb-3">Editar bicicleta</h1>
+<h1 class="text-3xl font-bold text-green-700 mb-6">Editar Bicicleta</h1>
 
-    <form action="{{ route('bicicletas.update', $bicicleta) }}" method="POST">
-        @csrf
-        @method('PUT')
+<form action="{{ route('bicicletas.update', $bicicleta->id) }}" method="POST" enctype="multipart/form-data"
+      class="bg-white rounded shadow p-6 max-w-xl">
+    @csrf
+    @method('PUT')
 
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label class="form-label">Nombre</label>
-                <input type="text" name="nombre" value="{{ old('nombre', $bicicleta->nombre) }}" class="form-control" required>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Tipo</label>
-                <select name="tipo" class="form-select" required>
-                    <option value="venta" {{ old('tipo',$bicicleta->tipo)=='venta'?'selected':'' }}>Venta</option>
-                    <option value="alquiler" {{ old('tipo',$bicicleta->tipo)=='alquiler'?'selected':'' }}>Alquiler</option>
-                    <option value="mixto" {{ old('tipo',$bicicleta->tipo)=='mixto'?'selected':'' }}>Mixto</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Stock</label>
-                <input type="number" name="stock" value="{{ old('stock',$bicicleta->stock) }}" min="0" class="form-control" required>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Precio venta (S/)</label>
-                <input type="number" step="0.01" name="precio_venta" value="{{ old('precio_venta',$bicicleta->precio_venta) }}" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Precio alquiler x hora (S/)</label>
-                <input type="number" step="0.01" name="precio_alquiler_hora" value="{{ old('precio_alquiler_hora',$bicicleta->precio_alquiler_hora) }}" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Estado</label>
-                <select name="estado" class="form-select">
-                    <option value="disponible" {{ old('estado',$bicicleta->estado)=='disponible'?'selected':'' }}>Disponible</option>
-                    <option value="no_disponible" {{ old('estado',$bicicleta->estado)=='no_disponible'?'selected':'' }}>No disponible</option>
-                </select>
-            </div>
-            <div class="col-12">
-                <label class="form-label">Descripción</label>
-                <textarea name="descripcion" rows="3" class="form-control">{{ old('descripcion',$bicicleta->descripcion) }}</textarea>
-            </div>
-        </div>
+    <div class="mb-4">
+        <label class="font-semibold">Nombre</label>
+        <input type="text" name="nombre" class="w-full border rounded px-3 py-2"
+               value="{{ $bicicleta->nombre }}" required>
+    </div>
 
-        <div class="mt-4">
-            <button class="btn btn-success">Actualizar</button>
-            <a href="{{ route('bicicletas.index') }}" class="btn btn-outline-secondary">Cancelar</a>
-        </div>
-    </form>
-</div>
+    <div class="mb-4">
+        <label class="font-semibold">Tipo</label>
+        <select name="tipo" class="w-full border rounded px-3 py-2" required>
+            <option value="venta" {{ $bicicleta->tipo=='venta'?'selected':'' }}>Venta</option>
+            <option value="alquiler" {{ $bicicleta->tipo=='alquiler'?'selected':'' }}>Alquiler</option>
+            <option value="mixto" {{ $bicicleta->tipo=='mixto'?'selected':'' }}>Mixto</option>
+        </select>
+    </div>
+
+    <div class="mb-4">
+        <label class="font-semibold">Precio de venta</label>
+        <input type="number" step="0.01" name="precio_venta" class="w-full border rounded px-3 py-2"
+               value="{{ $bicicleta->precio_venta }}">
+    </div>
+
+    <div class="mb-4">
+        <label class="font-semibold">Precio alquiler por hora</label>
+        <input type="number" step="0.01" name="precio_alquiler_hora" class="w-full border rounded px-3 py-2"
+               value="{{ $bicicleta->precio_alquiler_hora }}">
+    </div>
+
+    <div class="mb-4">
+        <label class="font-semibold">Stock</label>
+        <input type="number" name="stock" class="w-full border rounded px-3 py-2"
+               value="{{ $bicicleta->stock }}" required>
+    </div>
+
+    <div class="mb-4">
+        <label class="font-semibold">Estado</label>
+        <select name="estado" class="w-full border rounded px-3 py-2">
+            <option value="disponible" {{ $bicicleta->estado=='disponible'?'selected':'' }}>Disponible</option>
+            <option value="no disponible" {{ $bicicleta->estado=='no disponible'?'selected':'' }}>No disponible</option>
+        </select>
+    </div>
+
+    <div class="mb-4">
+        <label class="font-semibold">Descripción</label>
+        <textarea name="descripcion" class="w-full border rounded px-3 py-2">{{ $bicicleta->descripcion }}</textarea>
+    </div>
+
+    <div class="mb-4">
+        <label class="font-semibold">Foto actual</label><br>
+        @if($bicicleta->foto)
+            <img src="{{ asset('storage/'.$bicicleta->foto) }}" class="w-40 h-24 object-cover rounded mb-2">
+        @else
+            <span class="text-gray-500">Sin imagen</span>
+        @endif
+        <input type="file" name="foto" class="w-full">
+    </div>
+
+    <button class="bg-green-600 text-white px-4 py-2 rounded">Actualizar</button>
+</form>
 @endsection
