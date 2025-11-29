@@ -134,21 +134,30 @@
                         <a class="nav-link" href="{{ url('/') }}">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#catalogo">Catálogo</a>
+                         <a class="nav-link" href="{{ route('catalogo') }}">Catálogo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#mantenimiento">Mantenimiento</a>
+                        <a class="nav-link" href="{{ route('servicios') }}">Servicios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#alquiler-corporativo">Alquiler Corporativo</a>
+                        <a class="nav-link" href="{{ route('alquiler-corporativo.create') }}">Alquiler Corporativo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#blog">Blog</a>
+                        <a class="nav-link" href="{{ route('nosotros') }}">Nosotros</a>
                     </li>
                 </ul>
 
                 <!-- Right Navigation -->
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{{ route('carrito.index') }}">
+                            <i class="fas fa-shopping-cart me-1"></i>Carrito
+                            @php($cartCount = collect(session('cart', []))->sum('cantidad'))
+                            @if($cartCount > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ $cartCount }}</span>
+                            @endif
+                        </a>
+                    </li>
                     @guest
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">

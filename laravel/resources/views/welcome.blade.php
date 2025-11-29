@@ -12,12 +12,12 @@
                         Venta, alquiler y mantenimiento en Lima, Perú.
                     </p>
                     <div class="d-flex flex-wrap gap-3">
-                        <button class="btn btn-light btn-lg px-4 py-2">
+                        <a class="btn btn-light btn-lg px-4 py-2" href="{{ route('contacto') }}">
                             <i class="fas fa-robot me-2"></i>Habla con Bici IA
-                        </button>
-                        <button class="btn btn-outline-light btn-lg px-4 py-2">
+                        </a>
+                        <a class="btn btn-outline-light btn-lg px-4 py-2" href="{{ route('catalogo') }}">
                             <i class="fas fa-bicycle me-2"></i>Ver Catálogo
-                        </button>
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-6 text-center">

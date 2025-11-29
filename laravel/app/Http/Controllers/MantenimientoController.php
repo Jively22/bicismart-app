@@ -23,8 +23,7 @@ class MantenimientoController extends Controller
         if ($request->filled('tipo')) {
             $query->where('tipo', $request->tipo);
         }
-
-        $mantenimientos = $query->orderBy('fecha_mantenimiento', 'desc')->paginate(10);
+        $mantenimientos = $query->orderBy('fecha_inicio', 'desc')->paginate(10);
         
         $bicicletas = Bicicleta::all();
 
@@ -39,7 +38,7 @@ class MantenimientoController extends Controller
 
     public function create()
     {
-        $bicicletas = Bicicleta::where('estado', '!=', 'en_mantenimiento')->get();
+        $bicicletas = Bicicleta::where('disponible_para_alquiler', true)->get();
         
         return view('mantenimientos.create', compact('bicicletas'));
     }
@@ -61,7 +60,7 @@ class MantenimientoController extends Controller
         $mantenimiento = Mantenimiento::create($validated);
 
         $bicicleta = Bicicleta::find($validated['bicicleta_id']);
-        $bicicleta->update(['estado' => 'en_mantenimiento']);
+         $bicicleta->update(['disponible_para_alquiler' => false]);
 
         return redirect()->route('mantenimientos.index')
                          ->with('success', 'Mantenimiento registrado exitosamente.');
@@ -95,15 +94,14 @@ class MantenimientoController extends Controller
 
         if ($validated['estado'] === 'completado' && $mantenimiento->estado !== 'completado') {
             $bicicleta = Bicicleta::find($validated['bicicleta_id']);
-            $bicicleta->update(['estado' => 'disponible']);
-        }
+            $bicicleta->update(['disponible_para_alquiler' => true]);
+             }
 
         if ($mantenimiento->bicicleta_id != $validated['bicicleta_id']) {
             $bicicletaAnterior = Bicicleta::find($mantenimiento->bicicleta_id);
-            $bicicletaAnterior->update(['estado' => 'disponible']);
-            
+            $bicicletaAnterior->update(['disponible_para_alquiler' => true]);
             $nuevaBicicleta = Bicicleta::find($validated['bicicleta_id']);
-            $nuevaBicicleta->update(['estado' => 'en_mantenimiento']);
+            $nuevaBicicleta->update(['disponible_para_alquiler' => false]);
         }
 
         $mantenimiento->update($validated);
@@ -116,7 +114,7 @@ class MantenimientoController extends Controller
     {
         $bicicleta = Bicicleta::find($mantenimiento->bicicleta_id);
         if ($bicicleta && $mantenimiento->estado !== 'completado') {
-            $bicicleta->update(['estado' => 'disponible']);
+            $bicicleta->update(['disponible_para_alquiler' => true]);
         }
 
         $mantenimiento->delete();
@@ -133,7 +131,7 @@ class MantenimientoController extends Controller
         ]);
 
         $bicicleta = Bicicleta::find($mantenimiento->bicicleta_id);
-        $bicicleta->update(['estado' => 'disponible']);
+        $bicicleta->update(['disponible_para_alquiler' => true]);
 
         return redirect()->route('mantenimientos.index')
                          ->with('success', 'Mantenimiento marcado como completado');

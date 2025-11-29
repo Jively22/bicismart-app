@@ -22,6 +22,12 @@ class Mantenimiento extends Model
         'observaciones'
     ];
 
+    protected $casts = [
+        'fecha_inicio' => 'date',
+        'fecha_fin_prevista' => 'date',
+        'fecha_fin' => 'date',
+    ];
+
     public function bicicleta()
     {
         return $this->belongsTo(Bicicleta::class);
