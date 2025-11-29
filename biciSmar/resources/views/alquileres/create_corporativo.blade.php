@@ -26,9 +26,9 @@
         <input type="date" name="fecha_fin" class="w-full border rounded px-3 py-2" required>
     </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Precio total (S/)</label>
-        <input type="number" step="0.01" name="precio_total" class="w-full border rounded px-3 py-2" required>
+    <div class="mt-4">
+        <label class="font-semibold">Precio total (calculado)</label>
+        <input type="text" id="precio_total" class="w-full border rounded p-2 bg-gray-100" disabled>
     </div>
 
     <button class="bg-green-600 text-white px-4 py-2 rounded">Registrar alquiler corporativo</button>

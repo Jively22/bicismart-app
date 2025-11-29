@@ -11,10 +11,10 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
-            $table->foreignId('bicicleta_id')->constrained('bicicletas');
+            $table->foreignId('bicicleta_id')->constrained('bicicletas')->onDelete('cascade');
             $table->integer('cantidad');
-            $table->decimal('precio_unitario', 8, 2);
-            $table->decimal('subtotal', 8, 2);
+            $table->decimal('precio_unitario', 10, 2);
+            $table->decimal('subtotal', 10, 2);
             $table->timestamps();
         });
     }

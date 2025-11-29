@@ -10,16 +10,14 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        if (!User::where('email', 'admin@bicismart.com')->exists()) {
-            User::create([
+        User::updateOrCreate(
+            ['email' => 'admin@bicismart.com'],
+            [
                 'name' => 'Administrador BiciSmart',
-                'email' => 'admin@bicismart.com',
                 'password' => Hash::make('password'),
-                'role' => 'admin',
-                'tipo_cliente' => 'empresa',
-                'ruc' => '20123456789',
-                'nombre_empresa' => 'BiciSmart Corp',
-            ]);
-        }
+                'tipo_cliente' => 'individual',
+                'is_admin' => true,
+            ]
+        );
     }
 }

@@ -12,77 +12,65 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cart = session()->get('cart', []);
-        $bicicletas = Bicicleta::whereIn('id', array_keys($cart))->get();
+        $cart = session('cart', []);
+
+        if (empty($cart)) {
+            return view('cart.index', ['cart' => [], 'bicicletas' => [], 'total' => 0]);
+        }
+
+        $ids = array_keys($cart);
+        $bicicletas = Bicicleta::whereIn('id', $ids)->get();
         $total = 0;
 
         foreach ($bicicletas as $bici) {
-            $cantidad = $cart[$bici->id];
-            $precio = $bici->precio_venta ?? 0;
-            $total += $cantidad * $precio;
+            $total += ($bici->precio_venta ?? 0) * $cart[$bici->id];
         }
 
-        return view('cart.index', compact('bicicletas', 'cart', 'total'));
+        return view('cart.index', compact('cart', 'bicicletas', 'total'));
     }
 
     public function add(Bicicleta $bicicleta)
     {
-        if (!$bicicleta->precio_venta) {
-            return back()->with('success', 'Esta bicicleta no está disponible para venta.');
-        }
-
-        $cart = session()->get('cart', []);
+        $cart = session('cart', []);
         $cart[$bicicleta->id] = ($cart[$bicicleta->id] ?? 0) + 1;
-        session()->put('cart', $cart);
+        session(['cart' => $cart]);
 
-        return back()->with('success', 'Bicicleta agregada al carrito.');
+        return back()->with('success', 'Bicicleta añadida al carrito.');
     }
 
     public function update(Request $request, Bicicleta $bicicleta)
     {
-        $cantidad = (int) $request->input('cantidad', 1);
-        $cart = session()->get('cart', []);
-
-        if ($cantidad <= 0) {
-            unset($cart[$bicicleta->id]);
-        } else {
-            $cart[$bicicleta->id] = $cantidad;
-        }
-
-        session()->put('cart', $cart);
+        $cart = session('cart', []);
+        $cantidad = max(1, (int) $request->input('cantidad', 1));
+        $cart[$bicicleta->id] = $cantidad;
+        session(['cart' => $cart]);
 
         return back()->with('success', 'Carrito actualizado.');
     }
 
     public function remove(Bicicleta $bicicleta)
     {
-        $cart = session()->get('cart', []);
+        $cart = session('cart', []);
         unset($cart[$bicicleta->id]);
-        session()->put('cart', $cart);
+        session(['cart' => $cart]);
 
         return back()->with('success', 'Bicicleta eliminada del carrito.');
     }
 
     public function checkout()
     {
+        $cart = session('cart', []);
+        if (empty($cart)) {
+            return back()->with('success', 'Tu carrito está vacío.');
+        }
+
         $user = Auth::user();
-        $cart = session()->get('cart', []);
+        $ids = array_keys($cart);
+        $bicicletas = Bicicleta::whereIn('id', $ids)->get();
 
-        if (!$user || empty($cart)) {
-            return redirect()->route('cart.index')->with('success', 'No hay productos en el carrito.');
-        }
-
-        $bicicletas = Bicicleta::whereIn('id', array_keys($cart))->get();
         $total = 0;
-
         foreach ($bicicletas as $bici) {
-            $cantidad = $cart[$bici->id];
-            $precio = $bici->precio_venta ?? 0;
-            $total += $cantidad * $precio;
-        }
-
-        if ($total <= 0) {
-            return redirect()->route('cart.index')->with('success', 'No hay productos válidos para comprar.');
+            $total += ($bici->precio_venta ?? 0) * $cart[$bici->id];
         }
 
         $order = Order::create([
@@ -91,28 +79,24 @@ class CartController extends Controller
         ]);
 
         foreach ($bicicletas as $bici) {
-            $cantidad = $cart[$bici->id];
-            $precio = $bici->precio_venta ?? 0;
-
             OrderItem::create([
                 'order_id' => $order->id,
                 'bicicleta_id' => $bici->id,
-                'cantidad' => $cantidad,
-                'precio_unitario' => $precio,
-                'subtotal' => $cantidad * $precio,
+                'cantidad' => $cart[$bici->id],
+                'precio_unitario' => $bici->precio_venta ?? 0,
+                'subtotal' => ($bici->precio_venta ?? 0) * $cart[$bici->id],
             ]);
         }
 
         session()->forget('cart');
 
-        return redirect()->route('cart.historial')->with('success', 'Compra realizada correctamente.');
+        return redirect()->route('cart.historial')->with('success', 'Compra registrada correctamente.');
     }
 
     public function historial()
     {
-        $user = Auth::user();
         $orders = Order::with('items.bicicleta')
-            ->where('user_id', $user->id)
+            ->where('user_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
 

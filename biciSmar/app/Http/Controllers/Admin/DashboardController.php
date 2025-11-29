@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Bicicleta;
 use App\Models\Alquiler;
-use App\Models\Order;
+use App\Models\Bicicleta;
 use App\Models\Mantenimiento;
+use App\Models\Order;
 
 class DashboardController extends Controller
 {

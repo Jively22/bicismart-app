@@ -12,9 +12,9 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->text('descripcion')->nullable();
-            $table->decimal('precio', 8, 2);
-            $table->string('tipo_servicio'); // interno / externo
-            $table->string('tecnico');
+            $table->decimal('precio', 10, 2);
+            $table->string('tipo_servicio')->default('interno'); // interno o externo
+            $table->string('proveedor')->nullable();
             $table->timestamps();
         });
     }

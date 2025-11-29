@@ -15,10 +15,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
         'tipo_cliente',
         'ruc',
         'nombre_empresa',
+        'is_admin',
     ];
 
     protected $hidden = [
@@ -29,11 +29,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_admin' => 'boolean',
     ];
 
-    public function esAdmin()
+    public function esAdmin(): bool
     {
-        return $this->role === 'admin';
+        return (bool) ($this->is_admin ?? false);
     }
 
     public function alquileres()
@@ -41,8 +42,8 @@ class User extends Authenticatable
         return $this->hasMany(Alquiler::class);
     }
 
-    public function mantenimientos()
+    public function orders()
     {
-        return $this->hasMany(Mantenimiento::class);
+        return $this->hasMany(Order::class);
     }
 }

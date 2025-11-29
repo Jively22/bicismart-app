@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\Storage;
 
 class BicicletaController extends Controller
 {
-    // Catálogo público
+    public function index()
+    {
+        $bicicletas = Bicicleta::orderBy('id', 'desc')->paginate(10);
+        return view('bicicletas.index', compact('bicicletas'));
+    }
+
     public function catalogo()
     {
         $bicicletas = Bicicleta::where('estado', 'disponible')->get();
@@ -20,13 +25,6 @@ class BicicletaController extends Controller
         return view('bicicletas.show_public', compact('bicicleta'));
     }
 
-    // CRUD admin
-    public function index()
-    {
-        $bicicletas = Bicicleta::orderBy('id', 'desc')->get();
-        return view('bicicletas.index', compact('bicicletas'));
-    }
-
     public function create()
     {
         return view('bicicletas.create');
@@ -35,63 +33,66 @@ class BicicletaController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nombre' => 'required',
-            'tipo' => 'required|in:venta,alquiler,mixto',
+            'nombre' => 'required|string|max:255',
+            'tipo' => 'required|string|max:50',
+            'descripcion' => 'nullable|string',
             'precio_venta' => 'nullable|numeric',
             'precio_alquiler_hora' => 'nullable|numeric',
-            'stock' => 'required|integer',
-            'descripcion' => 'nullable',
-            'estado' => 'required',
+            'stock' => 'required|integer|min:0',
+            'estado' => 'required|string|max:50',
             'foto' => 'nullable|image',
         ]);
 
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('images/bicicletas', 'public');
+            $data['foto'] = $request->file('foto')->store('bicicletas', 'public');
         }
 
         Bicicleta::create($data);
 
-        return redirect()->route('bicicletas.index')->with('success', 'Bicicleta creada correctamente.');
+        return redirect()->route('admin.bicicletas.index')
+            ->with('success', 'Bicicleta creada correctamente.');
     }
 
-    public function edit($id)
+    public function edit(Bicicleta $bicicleta)
     {
-        $bicicleta = Bicicleta::findOrFail($id);
         return view('bicicletas.edit', compact('bicicleta'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Bicicleta $bicicleta)
     {
-        $bicicleta = Bicicleta::findOrFail($id);
-
         $data = $request->validate([
-            'nombre' => 'required',
-            'tipo' => 'required|in:venta,alquiler,mixto',
+            'nombre' => 'required|string|max:255',
+            'tipo' => 'required|string|max:50',
+            'descripcion' => 'nullable|string',
             'precio_venta' => 'nullable|numeric',
             'precio_alquiler_hora' => 'nullable|numeric',
-            'stock' => 'required|integer',
-            'descripcion' => 'nullable',
-            'estado' => 'required',
+            'stock' => 'required|integer|min:0',
+            'estado' => 'required|string|max:50',
             'foto' => 'nullable|image',
         ]);
 
         if ($request->hasFile('foto')) {
-            if ($bicicleta->foto && Storage::disk('public')->exists($bicicleta->foto)) {
+            if ($bicicleta->foto) {
                 Storage::disk('public')->delete($bicicleta->foto);
             }
-            $data['foto'] = $request->file('foto')->store('images/bicicletas', 'public');
+            $data['foto'] = $request->file('foto')->store('bicicletas', 'public');
         }
 
         $bicicleta->update($data);
 
-        return redirect()->route('bicicletas.index')->with('success', 'Bicicleta actualizada correctamente.');
+        return redirect()->route('admin.bicicletas.index')
+            ->with('success', 'Bicicleta actualizada correctamente.');
     }
 
-    public function destroy($id)
+    public function destroy(Bicicleta $bicicleta)
     {
-        $bicicleta = Bicicleta::findOrFail($id);
+        if ($bicicleta->foto) {
+            Storage::disk('public')->delete($bicicleta->foto);
+        }
+
         $bicicleta->delete();
 
-        return redirect()->route('bicicletas.index')->with('success', 'Bicicleta eliminada correctamente.');
+        return redirect()->route('admin.bicicletas.index')
+            ->with('success', 'Bicicleta eliminada correctamente.');
     }
 }

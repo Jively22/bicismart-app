@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="text-3xl font-bold text-green-700 mb-6">Historial de compras</h1>
+<h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">Historial de compras</h1>
 
 @forelse($orders as $order)
-    <div class="bg-white rounded shadow mb-4 p-4">
-        <div class="flex justify-between mb-2">
-            <span class="font-semibold">Pedido #{{ $order->id }}</span>
-            <span class="text-gray-600">{{ $order->created_at }}</span>
+    <div class="bg-white/90 rounded-3xl shadow-md border border-gray-100 mb-4 p-4">
+        <div class="flex justify-between items-center mb-2 text-xs text-gray-600">
+            <span>Pedido #{{ $order->id }}</span>
+            <span>{{ $order->created_at->format('d/m/Y H:i') }}</span>
         </div>
-        <table class="w-full text-sm mb-2">
-            <thead class="bg-gray-100">
+        <table class="w-full text-[11px] mb-2">
+            <thead class="bg-gray-50">
                 <tr>
                     <th class="px-2 py-1 text-left">Bicicleta</th>
                     <th class="px-2 py-1 text-left">Cantidad</th>
@@ -29,11 +29,16 @@
                 @endforeach
             </tbody>
         </table>
-        <p class="text-right font-bold">
+        <p class="text-right text-xs font-semibold text-green-700">
             Total: S/ {{ number_format($order->total, 2) }}
         </p>
     </div>
 @empty
-    <p class="text-gray-600">Aún no tienes compras registradas.</p>
+    <div class="bg-white/90 rounded-3xl shadow-md border border-gray-100 p-6 text-center">
+        <p class="text-sm text-gray-700 mb-2">Aún no tienes compras registradas.</p>
+        <a href="{{ route('bicicletas.catalogo') }}" class="text-sm text-green-700 font-semibold hover:underline">
+            Ver catálogo
+        </a>
+    </div>
 @endforelse
 @endsection

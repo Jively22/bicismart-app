@@ -12,10 +12,10 @@ class Bicicleta extends Model
     protected $fillable = [
         'nombre',
         'tipo',
+        'descripcion',
         'precio_venta',
         'precio_alquiler_hora',
         'stock',
-        'descripcion',
         'estado',
         'foto',
     ];

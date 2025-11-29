@@ -2,53 +2,45 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Mantenimiento;
+use Illuminate\Database\Seeder;
 
 class MantenimientoSeeder extends Seeder
 {
     public function run(): void
     {
-        // Internos
+        Mantenimiento::query()->delete();
+
         Mantenimiento::create([
-            'nombre' => 'Ajuste general de bicicleta',
-            'descripcion' => 'Incluye ajuste de frenos, cambios, lubricación y revisión de seguridad.',
-            'precio' => 45.00,
+            'nombre' => 'Ajuste general',
+            'descripcion' => 'Incluye ajuste de frenos, cambios, tornillería y revisión de seguridad.',
+            'precio' => 45,
             'tipo_servicio' => 'interno',
-            'tecnico' => 'BiciSmart - Técnico Certificado',
+            'proveedor' => 'Taller BiciSmart',
         ]);
 
         Mantenimiento::create([
-            'nombre' => 'Mantenimiento completo premium',
-            'descripcion' => 'Servicio completo: frenos, cambios, limpieza profunda, transmisión y ruedas.',
-            'precio' => 95.00,
+            'nombre' => 'Servicio de frenos premium',
+            'descripcion' => 'Cambio de zapatas/pads, alineado de discos y purga de frenos hidráulicos.',
+            'precio' => 70,
             'tipo_servicio' => 'interno',
-            'tecnico' => 'BiciSmart - Especialista Premium',
-        ]);
-
-        // Externos
-        Mantenimiento::create([
-            'nombre' => 'Cambio de llanta / tubo',
-            'descripcion' => 'Servicio rápido para pinchazos y desgaste de llantas.',
-            'precio' => 18.00,
-            'tipo_servicio' => 'externo',
-            'tecnico' => 'Juan Pérez Bike Service',
+            'proveedor' => 'Taller BiciSmart',
         ]);
 
         Mantenimiento::create([
-            'nombre' => 'Lubricación completa',
-            'descripcion' => 'Lubricación de cadena, cables, cambios y pedales.',
-            'precio' => 15.00,
+            'nombre' => 'Mantenimiento total corporativo',
+            'descripcion' => 'Servicio completo para flotas, con recogida y entrega en la empresa.',
+            'precio' => 220,
             'tipo_servicio' => 'externo',
-            'tecnico' => 'Rodrigo Bike Solutions',
+            'proveedor' => 'BikePartners SAC',
         ]);
 
         Mantenimiento::create([
-            'nombre' => 'Servicio corporativo (por bicicleta)',
-            'descripcion' => 'Mantenimiento mensual para flotas empresariales.',
-            'precio' => 120.00,
+            'nombre' => 'Ajuste básico a domicilio',
+            'descripcion' => 'Ajuste rápido de frenos y cambios, realizado por técnico aliado externo.',
+            'precio' => 35,
             'tipo_servicio' => 'externo',
-            'tecnico' => 'Mobilitex Corporate Mobility',
+            'proveedor' => 'Aliado externo certificado',
         ]);
     }
 }

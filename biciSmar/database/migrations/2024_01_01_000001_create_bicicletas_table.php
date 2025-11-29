@@ -11,11 +11,11 @@ return new class extends Migration
         Schema::create('bicicletas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->enum('tipo', ['venta', 'alquiler', 'mixto']);
-            $table->decimal('precio_venta', 8, 2)->nullable();
-            $table->decimal('precio_alquiler_hora', 8, 2)->nullable();
-            $table->integer('stock')->default(0);
+            $table->string('tipo')->default('mixta'); // venta, alquiler, mixta
             $table->text('descripcion')->nullable();
+            $table->decimal('precio_venta', 10, 2)->nullable();
+            $table->decimal('precio_alquiler_hora', 10, 2)->nullable();
+            $table->integer('stock')->default(0);
             $table->string('estado')->default('disponible');
             $table->string('foto')->nullable();
             $table->timestamps();

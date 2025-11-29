@@ -16,6 +16,6 @@ class Mantenimiento extends Model
         'descripcion',
         'precio',
         'tipo_servicio',
-        'tecnico',
+        'proveedor',
     ];
 }

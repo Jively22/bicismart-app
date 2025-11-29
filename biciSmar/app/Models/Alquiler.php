@@ -14,19 +14,25 @@ class Alquiler extends Model
     protected $fillable = [
         'user_id',
         'bicicleta_id',
-        'tipo',
+        'tipo_cliente',
         'fecha_inicio',
         'fecha_fin',
         'precio_total',
+        'observaciones',
     ];
 
-    public function bicicleta()
-    {
-        return $this->belongsTo(Bicicleta::class);
-    }
+    protected $casts = [
+        'fecha_inicio' => 'datetime',
+        'fecha_fin' => 'datetime',
+    ];
 
     public function usuario()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function bicicleta()
+    {
+        return $this->belongsTo(Bicicleta::class);
     }
 }

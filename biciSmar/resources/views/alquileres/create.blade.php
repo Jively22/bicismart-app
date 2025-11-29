@@ -36,9 +36,9 @@
                 <label class="form-label">Fecha fin</label>
                 <input type="datetime-local" name="fecha_fin" class="form-control" required>
             </div>
-            <div class="col-md-4">
-                <label class="form-label">Total (S/)</label>
-                <input type="number" step="0.01" name="total" class="form-control" value="{{ old('total') }}" required>
+            <div class="mt-4">
+                <label class="font-semibold">Precio total (calculado)</label>
+                <input type="text" id="precio_total" class="w-full border rounded p-2 bg-gray-100" disabled>
             </div>
             <div class="col-md-4">
                 <label class="form-label">Estado</label>

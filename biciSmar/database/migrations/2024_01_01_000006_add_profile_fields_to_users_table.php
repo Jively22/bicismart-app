@@ -9,17 +9,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('cliente')->after('password');
-            $table->enum('tipo_cliente', ['individual','empresa'])->default('individual')->after('role');
-            $table->string('ruc', 11)->nullable()->after('tipo_cliente');
+            $table->string('tipo_cliente')->nullable()->after('email');
+            $table->string('ruc')->nullable()->after('tipo_cliente');
             $table->string('nombre_empresa')->nullable()->after('ruc');
+            $table->boolean('is_admin')->default(false)->after('nombre_empresa');
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['role','tipo_cliente','ruc','nombre_empresa']);
+            $table->dropColumn(['tipo_cliente', 'ruc', 'nombre_empresa', 'is_admin']);
         });
     }
 };

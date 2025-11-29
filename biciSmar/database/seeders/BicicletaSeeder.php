@@ -2,66 +2,43 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Bicicleta;
+use Illuminate\Database\Seeder;
 
 class BicicletaSeeder extends Seeder
 {
     public function run(): void
     {
+        Bicicleta::query()->delete();
+
         Bicicleta::create([
-            'nombre' => 'Bici Urbana EcoRide',
-            'tipo' => 'mixto',
-            'precio_venta' => 950.00,
-            'precio_alquiler_hora' => 8.50,
+            'nombre' => 'EcoRide Ciudad 3.0',
+            'tipo' => 'mixta',
+            'descripcion' => 'Bicicleta urbana ligera con cambios de 7 velocidades y frenos de disco.',
+            'precio_venta' => 1200,
+            'precio_alquiler_hora' => 8.5,
             'stock' => 10,
-            'descripcion' => 'Bicicleta urbana ligera, ideal para la ciudad.',
             'estado' => 'disponible',
-            'foto' => 'images/bicicletas/bici_urbana.jpg',
         ]);
 
         Bicicleta::create([
-            'nombre' => 'Montañera ProTrail 3000',
-            'tipo' => 'venta',
-            'precio_venta' => 1490.00,
-            'precio_alquiler_hora' => null,
-            'stock' => 7,
-            'descripcion' => 'Perfecta para rutas de montaña y terrenos difíciles.',
+            'nombre' => 'TrailX Montaña Pro',
+            'tipo' => 'mixta',
+            'descripcion' => 'Bicicleta de montaña con suspensión delantera y llantas todo terreno.',
+            'precio_venta' => 1850,
+            'precio_alquiler_hora' => 12,
+            'stock' => 6,
             'estado' => 'disponible',
-            'foto' => 'images/bicicletas/montanera_protrail.jpg',
         ]);
 
         Bicicleta::create([
-            'nombre' => 'Ruta SpeedMaster X',
-            'tipo' => 'venta',
-            'precio_venta' => 2100.00,
-            'precio_alquiler_hora' => null,
+            'nombre' => 'Urban E-Move Eléctrica',
+            'tipo' => 'mixta',
+            'descripcion' => 'Bicicleta eléctrica ideal para trayectos urbanos largos con asistencia al pedaleo.',
+            'precio_venta' => 3200,
+            'precio_alquiler_hora' => 18,
             'stock' => 4,
-            'descripcion' => 'Bicicleta de ruta aerodinámica para alta velocidad.',
             'estado' => 'disponible',
-            'foto' => 'images/bicicletas/ruta_speedmaster.jpg',
-        ]);
-
-        Bicicleta::create([
-            'nombre' => 'Bici Corporativa UrbanFleet',
-            'tipo' => 'alquiler',
-            'precio_venta' => null,
-            'precio_alquiler_hora' => 12.00,
-            'stock' => 20,
-            'descripcion' => 'Modelo recomendado para alquiler corporativo y movilidad laboral.',
-            'estado' => 'disponible',
-            'foto' => 'images/bicicletas/corporativa_urbanfleet.jpg',
-        ]);
-
-        Bicicleta::create([
-            'nombre' => 'Bici Eléctrica PowerRide E1',
-            'tipo' => 'mixto',
-            'precio_venta' => 3200.00,
-            'precio_alquiler_hora' => 18.00,
-            'stock' => 5,
-            'descripcion' => 'Bicicleta eléctrica con excelente autonomía.',
-            'estado' => 'disponible',
-            'foto' => 'images/bicicletas/electrica_powerride.jpg',
         ]);
     }
 }
