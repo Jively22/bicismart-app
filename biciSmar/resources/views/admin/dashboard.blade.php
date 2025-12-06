@@ -30,11 +30,12 @@
 
 <div class="surface-card border border-green-50 p-4 mb-4">
     <h2 class="text-sm font-semibold text-gray-800 mb-2">Accesos rápidos</h2>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-6 gap-3 text-sm">
         <a href="{{ route('admin.bicicletas.index') }}" class="btn-brand justify-center">Bicicletas</a>
         <a href="{{ route('admin.alquileres.index') }}" class="btn-ghost justify-center">Alquileres</a>
         <a href="{{ route('admin.mantenimientos.index') }}" class="btn-ghost justify-center">Mantenimientos</a>
         <a href="{{ route('admin.accesories.index') }}" class="btn-ghost justify-center">Accesorios</a>
+        <a href="{{ route('admin.users.index') }}" class="btn-ghost justify-center">Usuarios</a>
         <a href="{{ route('admin.ventas.index') }}" class="btn-ghost justify-center">Ventas</a>
     </div>
 </div>

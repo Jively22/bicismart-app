@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\VentaController;
 use App\Http\Controllers\SolicitudCorporativaController;
 use App\Http\Controllers\AccesoryController;
 use App\Http\Controllers\Admin\AccesoryController as AdminAccesoryController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use Illuminate\Http\Request;
 
 /*
@@ -141,6 +142,7 @@ Route::middleware('auth')->group(function () {
             Route::get('ventas', [VentaController::class, 'index'])->name('ventas.index');
             Route::get('ventas/{order}', [VentaController::class, 'show'])->name('ventas.show');
             Route::resource('accesories', AdminAccesoryController::class)->except(['show'])->parameters(['accesories' => 'accesory']);
+            Route::resource('users', AdminUserController::class)->except(['create', 'store', 'show']);
 
             /*
             |--------------------------------------------------------------------------
