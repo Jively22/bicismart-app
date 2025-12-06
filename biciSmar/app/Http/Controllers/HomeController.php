@@ -8,8 +8,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $bicicletas = Bicicleta::limit(3)->get();
+        $bicicletasTop = Bicicleta::orderByDesc('created_at')->limit(4)->get();
+        $bicicletasMini = Bicicleta::orderByDesc('created_at')->limit(6)->get();
 
-        return view('home', compact('bicicletas'));
+        return view('home', compact('bicicletasTop', 'bicicletasMini'));
     }
 }

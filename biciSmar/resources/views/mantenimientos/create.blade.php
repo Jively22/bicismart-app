@@ -1,40 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="text-3xl font-bold text-green-700 mb-6">Nuevo servicio de mantenimiento</h1>
+<div class="max-w-2xl">
+    <span class="pill mb-3 inline-flex">Nuevo servicio</span>
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Crear mantenimiento</h1>
 
-<form action="{{ route('admin.mantenimientos.store') }}" method="POST"
-      class="bg-white rounded shadow p-6 max-w-xl">
-    @csrf
+    <form action="{{ route('admin.mantenimientos.store') }}" method="POST" class="surface-card border border-green-50 p-6 space-y-4">
+        @csrf
 
-    <div class="mb-4">
-        <label class="font-semibold">Nombre</label>
-        <input type="text" name="nombre" class="w-full border rounded px-3 py-2" required>
-    </div>
+        <div class="form-field">
+            <label>Nombre</label>
+            <input type="text" name="nombre" required>
+        </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Descripción</label>
-        <textarea name="descripcion" class="w-full border rounded px-3 py-2"></textarea>
-    </div>
+        <div class="form-field">
+            <label>Tipo</label>
+            <select name="tipo_servicio" required>
+                <option value="preventivo">Preventivo</option>
+                <option value="correctivo">Correctivo</option>
+            </select>
+        </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Precio</label>
-        <input type="number" step="0.01" name="precio" class="w-full border rounded px-3 py-2" required>
-    </div>
+        <div class="form-field">
+            <label>Proveedor (opcional)</label>
+            <input type="text" name="proveedor">
+        </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Tipo de servicio</label>
-        <select name="tipo_servicio" class="w-full border rounded px-3 py-2">
-            <option value="interno">Interno (BiciSmart)</option>
-            <option value="externo">Externo (Técnicos independientes)</option>
-        </select>
-    </div>
+        <div class="form-field">
+            <label>Precio</label>
+            <input type="number" step="0.01" name="precio" required>
+        </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Proveedor (opcional)</label>
-        <input type="text" name="proveedor" class="w-full border rounded px-3 py-2" placeholder="Nombre del proveedor externo">
-    </div>
+        <div class="form-field">
+            <label>Descripción</label>
+            <textarea name="descripcion" rows="3"></textarea>
+        </div>
 
-    <button class="bg-green-600 text-white px-4 py-2 rounded">Guardar</button>
-</form>
+        <button class="btn-brand px-5">Guardar</button>
+    </form>
+</div>
 @endsection

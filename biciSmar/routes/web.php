@@ -10,7 +10,11 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\VentaController;
 use App\Http\Controllers\SolicitudCorporativaController;
+use App\Http\Controllers\AccesoryController;
+use App\Http\Controllers\Admin\AccesoryController as AdminAccesoryController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +39,10 @@ Route::get('/bicicletas/{bicicleta}', [BicicletaController::class, 'showPublic']
 // Mantenimientos públicos
 Route::get('/mantenimientos', [MantenimientoController::class, 'indexPublic'])->name('mantenimientos.public');
 
+// Accesorios / repuestos / merch (flujo secundario)
+Route::get('/accesorios', [AccesoryController::class, 'index'])->name('accesorios.index');
+Route::get('/accesorios/{accesory}', [AccesoryController::class, 'show'])->name('accesorios.show');
+
 // Formulario de solicitud de mantenimiento
 Route::middleware('auth')->group(function () {
     Route::get('/mantenimientos/solicitar/{mantenimiento}', [MantenimientoController::class, 'solicitarForm'])
@@ -48,6 +56,9 @@ Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
 Route::post('/carrito/agregar/{bicicleta}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/carrito/actualizar/{bicicleta}', [CartController::class, 'update'])->name('cart.update');
 Route::post('/carrito/eliminar/{bicicleta}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/carrito/accesorio/agregar/{accesory}', [CartController::class, 'addAccessory'])->name('cart.add.accessory');
+Route::post('/carrito/accesorio/actualizar/{accesory}', [CartController::class, 'updateAccessory'])->name('cart.update.accessory');
+Route::post('/carrito/accesorio/eliminar/{accesory}', [CartController::class, 'removeAccessory'])->name('cart.remove.accessory');
 Route::post('/carrito/checkout', [CartController::class, 'checkout'])->name('cart.checkout')->middleware('auth');
 Route::get('/carrito/historial', [CartController::class, 'historial'])->name('cart.historial')->middleware('auth');
 
@@ -127,10 +138,13 @@ Route::middleware('auth')->group(function () {
             Route::resource('alquileres', AlquilerController::class)->except(['show']);
             Route::resource('mantenimientos', MantenimientoController::class);
             Route::get('alquileres-historial', [AlquilerController::class, 'historialAdmin'])->name('alquileres.historial');
+            Route::get('ventas', [VentaController::class, 'index'])->name('ventas.index');
+            Route::get('ventas/{order}', [VentaController::class, 'show'])->name('ventas.show');
+            Route::resource('accesories', AdminAccesoryController::class)->except(['show'])->parameters(['accesories' => 'accesory']);
 
             /*
             |--------------------------------------------------------------------------
-            | ADMIN — Gestión Corporativa (nuevo módulo premium)
+            | ADMIN - Gestión Corporativa (nuevo módulo premium)
             |--------------------------------------------------------------------------
             */
 

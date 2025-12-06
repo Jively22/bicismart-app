@@ -1,70 +1,70 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="text-3xl font-bold text-green-700 mb-6">Editar Bicicleta</h1>
+<div class="max-w-3xl">
+    <span class="pill mb-3 inline-flex">Editar bicicleta</span>
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Actualizar datos</h1>
+    <p class="text-sm text-gray-600 mb-4">Ajusta stock, precios y descripción sin perder coherencia visual.</p>
 
-<form action="{{ route('admin.bicicletas.update', $bicicleta->id) }}" method="POST" enctype="multipart/form-data"
-      class="bg-white rounded shadow p-6 max-w-xl">
-    @csrf
-    @method('PUT')
+    <form action="{{ route('admin.bicicletas.update', $bicicleta->id) }}" method="POST" enctype="multipart/form-data"
+          class="surface-card border border-green-50 p-6 space-y-4">
+        @csrf
+        @method('PUT')
 
-    <div class="mb-4">
-        <label class="font-semibold">Nombre</label>
-        <input type="text" name="nombre" class="w-full border rounded px-3 py-2"
-               value="{{ $bicicleta->nombre }}" required>
-    </div>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="form-field">
+                <label>Nombre</label>
+                <input type="text" name="nombre" value="{{ $bicicleta->nombre }}" required>
+            </div>
+            <div class="form-field">
+                <label>Tipo</label>
+                <select name="tipo" required>
+                    <option value="venta" @if($bicicleta->tipo=='venta') selected @endif>Venta</option>
+                    <option value="alquiler" @if($bicicleta->tipo=='alquiler') selected @endif>Alquiler</option>
+                    <option value="mixto" @if($bicicleta->tipo=='mixto') selected @endif>Mixto</option>
+                </select>
+            </div>
+        </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Tipo</label>
-        <select name="tipo" class="w-full border rounded px-3 py-2" required>
-            <option value="venta" {{ $bicicleta->tipo=='venta'?'selected':'' }}>Venta</option>
-            <option value="alquiler" {{ $bicicleta->tipo=='alquiler'?'selected':'' }}>Alquiler</option>
-            <option value="mixto" {{ $bicicleta->tipo=='mixto'?'selected':'' }}>Mixto</option>
-        </select>
-    </div>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="form-field">
+                <label>Precio de venta (opcional)</label>
+                <input type="number" step="0.01" name="precio_venta" value="{{ $bicicleta->precio_venta }}">
+            </div>
+            <div class="form-field">
+                <label>Precio alquiler por hora (opcional)</label>
+                <input type="number" step="0.01" name="precio_alquiler_hora" value="{{ $bicicleta->precio_alquiler_hora }}">
+            </div>
+        </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Precio de venta</label>
-        <input type="number" step="0.01" name="precio_venta" class="w-full border rounded px-3 py-2"
-               value="{{ $bicicleta->precio_venta }}">
-    </div>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="form-field">
+                <label>Stock</label>
+                <input type="number" name="stock" value="{{ $bicicleta->stock }}" required>
+            </div>
+            <div class="form-field">
+                <label>Estado</label>
+                <select name="estado">
+                    <option value="disponible" @if($bicicleta->estado=='disponible') selected @endif>Disponible</option>
+                    <option value="no disponible" @if($bicicleta->estado=='no disponible') selected @endif>No disponible</option>
+                </select>
+            </div>
+        </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Precio alquiler por hora</label>
-        <input type="number" step="0.01" name="precio_alquiler_hora" class="w-full border rounded px-3 py-2"
-               value="{{ $bicicleta->precio_alquiler_hora }}">
-    </div>
+        <div class="form-field">
+            <label>Descripción</label>
+            <textarea name="descripcion" rows="3">{{ $bicicleta->descripcion }}</textarea>
+        </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Stock</label>
-        <input type="number" name="stock" class="w-full border rounded px-3 py-2"
-               value="{{ $bicicleta->stock }}" required>
-    </div>
+        <div class="form-field">
+            <label>Foto</label>
+            <input type="file" name="foto">
+            @if($bicicleta->foto)
+                <p class="text-xs text-gray-500 mt-1">Foto actual: {{ $bicicleta->foto }}</p>
+            @endif
+        </div>
 
-    <div class="mb-4">
-        <label class="font-semibold">Estado</label>
-        <select name="estado" class="w-full border rounded px-3 py-2">
-            <option value="disponible" {{ $bicicleta->estado=='disponible'?'selected':'' }}>Disponible</option>
-            <option value="no disponible" {{ $bicicleta->estado=='no disponible'?'selected':'' }}>No disponible</option>
-        </select>
-    </div>
-
-    <div class="mb-4">
-        <label class="font-semibold">Descripción</label>
-        <textarea name="descripcion" class="w-full border rounded px-3 py-2">{{ $bicicleta->descripcion }}</textarea>
-    </div>
-
-    <div class="mb-4">
-        <label class="font-semibold">Foto</label><br>
-        @if($bicicleta->foto)
-            <img src="{{ asset('storage/'.$bicicleta->foto) }}" class="w-40 h-24 object-cover rounded mb-2" alt="Foto actual de {{ $bicicleta->nombre }}">
-        @else
-            <span class="text-gray-500">Sin imagen</span>
-        @endif
-        <input type="file" name="foto" class="w-full">
-        <p class="text-xs text-gray-500 mt-1">Puedes subir una nueva imagen para reemplazar la actual.</p>
-    </div>
-
-    <button class="bg-green-600 text-white px-4 py-2 rounded">Actualizar</button>
-</form>
+        <button class="btn-brand px-5">Actualizar bicicleta</button>
+    </form>
+</div>
 @endsection

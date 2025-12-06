@@ -2,45 +2,63 @@
 
 namespace Database\Seeders;
 
-use App\Models\Mantenimiento;
 use Illuminate\Database\Seeder;
+use App\Models\Mantenimiento;
 
 class MantenimientoSeeder extends Seeder
 {
     public function run(): void
     {
-        Mantenimiento::query()->delete();
+        $servicios = [
+            [
+                'nombre' => 'Ajuste completo y alineación',
+                'descripcion' => 'Revisión de frenos, transmisión, alineación de ruedas y apriete general.',
+                'precio' => 85,
+                'tipo_servicio' => 'preventivo',
+                'proveedor' => null, // técnico oficial
+            ],
+            [
+                'nombre' => 'Servicio de transmisión y cassette',
+                'descripcion' => 'Limpieza profunda, ajuste de cambios y reemplazo de cadena o cassette si es necesario.',
+                'precio' => 140,
+                'tipo_servicio' => 'correctivo',
+                'proveedor' => null,
+            ],
+            [
+                'nombre' => 'Set de seguridad urbana',
+                'descripcion' => 'Instalación de luces, timbre y revisión de puntos de seguridad para ciudad.',
+                'precio' => 95,
+                'tipo_servicio' => 'preventivo',
+                'proveedor' => null,
+            ],
+            [
+                'nombre' => 'Ajuste básico domicilio',
+                'descripcion' => 'Calibración ligera de frenos y cambios en tu ubicación.',
+                'precio' => 60,
+                'tipo_servicio' => 'preventivo',
+                'proveedor' => 'Asociado RideFix',
+            ],
+            [
+                'nombre' => 'Cambio de cámara y llanta',
+                'descripcion' => 'Reemplazo de cámara o llanta pinchada, incluye revisión de presión.',
+                'precio' => 70,
+                'tipo_servicio' => 'correctivo',
+                'proveedor' => 'Taller Rueda Libre',
+            ],
+            [
+                'nombre' => 'Detailing y limpieza pro',
+                'descripcion' => 'Lavado profundo, desengrase y lubricación premium para mantener tu bici impecable.',
+                'precio' => 90,
+                'tipo_servicio' => 'preventivo',
+                'proveedor' => 'CleanBike Studio',
+            ],
+        ];
 
-        Mantenimiento::create([
-            'nombre' => 'Ajuste general',
-            'descripcion' => 'Incluye ajuste de frenos, cambios, tornillería y revisión de seguridad.',
-            'precio' => 45,
-            'tipo_servicio' => 'interno',
-            'proveedor' => 'Taller BiciSmart',
-        ]);
-
-        Mantenimiento::create([
-            'nombre' => 'Servicio de frenos premium',
-            'descripcion' => 'Cambio de zapatas/pads, alineado de discos y purga de frenos hidráulicos.',
-            'precio' => 70,
-            'tipo_servicio' => 'interno',
-            'proveedor' => 'Taller BiciSmart',
-        ]);
-
-        Mantenimiento::create([
-            'nombre' => 'Mantenimiento total corporativo',
-            'descripcion' => 'Servicio completo para flotas, con recogida y entrega en la empresa.',
-            'precio' => 220,
-            'tipo_servicio' => 'externo',
-            'proveedor' => 'BikePartners SAC',
-        ]);
-
-        Mantenimiento::create([
-            'nombre' => 'Ajuste básico a domicilio',
-            'descripcion' => 'Ajuste rápido de frenos y cambios, realizado por técnico aliado externo.',
-            'precio' => 35,
-            'tipo_servicio' => 'externo',
-            'proveedor' => 'Aliado externo certificado',
-        ]);
+        foreach ($servicios as $servicio) {
+            Mantenimiento::firstOrCreate(
+                ['nombre' => $servicio['nombre']],
+                $servicio
+            );
+        }
     }
 }

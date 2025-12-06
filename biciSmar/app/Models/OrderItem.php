@@ -14,6 +14,7 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'bicicleta_id',
+        'accesory_id',
         'cantidad',
         'precio_unitario',
         'subtotal',
@@ -27,5 +28,10 @@ class OrderItem extends Model
     public function bicicleta()
     {
         return $this->belongsTo(Bicicleta::class);
+    }
+
+    public function accesory()
+    {
+        return $this->belongsTo(Accesory::class, 'accesory_id');
     }
 }

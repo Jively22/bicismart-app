@@ -1,40 +1,47 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="text-3xl font-bold text-green-700 mb-6">Administrar mantenimientos</h1>
+<div class="flex items-center justify-between mb-4">
+    <div>
+        <span class="pill mb-2 inline-flex">Administrar</span>
+        <h1 class="text-3xl font-extrabold text-gray-900">Mantenimientos</h1>
+        <p class="text-sm text-gray-600">Servicios internos y externos disponibles.</p>
+    </div>
+    <a href="{{ route('admin.mantenimientos.create') }}"
+       class="btn-brand text-sm px-4">
+       + Nuevo servicio
+    </a>
+    </div>
 
-<a href="{{ route('admin.mantenimientos.create') }}"
-   class="bg-green-600 text-white px-4 py-2 rounded mb-4 inline-block">
-   + Nuevo servicio
-</a>
-
-<table class="w-full bg-white rounded shadow overflow-hidden">
-    <thead class="bg-green-700 text-white">
-        <tr>
-            <th class="px-4 py-2 text-left">Nombre</th>
-            <th class="px-4 py-2 text-left">Tipo</th>
-            <th class="px-4 py-2 text-left">Proveedor</th>
-            <th class="px-4 py-2 text-left">Precio</th>
-            <th class="px-4 py-2 text-left">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($mantenimientos as $m)
-            <tr class="border-b">
-                <td class="px-4 py-2">{{ $m->nombre }}</td>
-                <td class="px-4 py-2">{{ ucfirst($m->tipo_servicio) }}</td>
-                <td class="px-4 py-2">{{ $m->proveedor ?? 'Interno' }}</td>
-                <td class="px-4 py-2">S/ {{ number_format($m->precio, 2) }}</td>
-                <td class="px-4 py-2">
-                    <a href="{{ route('admin.mantenimientos.edit', $m->id) }}" class="text-blue-600">Editar</a>
-                    <form action="{{ route('admin.mantenimientos.destroy', $m->id) }}" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="text-red-600" onclick="return confirm('¿Eliminar servicio?')">Eliminar</button>
-                    </form>
-                </td>
+<div class="table-shell bg-white/90">
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Proveedor</th>
+                <th>Precio</th>
+                <th>Acciones</th>
             </tr>
-        @endforeach
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach($mantenimientos as $m)
+                <tr class="border-b border-green-50">
+                    <td class="text-sm font-semibold text-gray-900">{{ $m->nombre }}</td>
+                    <td class="text-sm text-gray-700">{{ ucfirst($m->tipo_servicio) }}</td>
+                    <td class="text-sm text-gray-700">{{ $m->proveedor ?? 'Interno' }}</td>
+                    <td class="text-sm text-gray-700">S/ {{ number_format($m->precio, 2) }}</td>
+                    <td class="text-sm text-gray-700 space-x-2">
+                        <a href="{{ route('admin.mantenimientos.edit', $m->id) }}" class="text-green-700 font-semibold">Editar</a>
+                        <form action="{{ route('admin.mantenimientos.destroy', $m->id) }}" method="POST" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="text-red-600 font-semibold" onclick="return confirm('¿Eliminar servicio?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 @endsection

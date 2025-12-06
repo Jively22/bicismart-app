@@ -4,7 +4,7 @@
 <div class="flex items-center justify-center">
     <div class="w-full max-w-2xl grid md:grid-cols-2 gap-8">
         <div class="hidden md:flex flex-col justify-center space-y-3">
-            <p class="text-xs tracking-[0.3em] text-green-700 uppercase">Crea tu cuenta</p>
+            <span class="pill inline-flex">Crea tu cuenta</span>
             <h1 class="text-3xl font-extrabold text-gray-900 leading-tight">
                 Súmate a la red BiciSmart.
             </h1>
@@ -24,68 +24,60 @@
                 <p class="text-xs text-gray-600">Completa tus datos para comenzar.</p>
             </div>
 
-            <div class="bg-white/90 backdrop-blur rounded-3xl shadow-xl border border-gray-100 p-6">
+            <div class="surface-card rounded-3xl border border-green-50 p-6">
                 <form method="POST" action="{{ route('register') }}" class="space-y-4">
                     @csrf
 
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nombre completo</label>
-                        <input type="text" name="name" value="{{ old('name') }}"
-                               class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50" required>
+                    <div class="form-field">
+                        <label>Nombre completo</label>
+                        <input type="text" name="name" value="{{ old('name') }}" required>
                         @error('name')
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Tipo de usuario</label>
-                        <select name="tipo_cliente" required
-                                class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    <div class="form-field">
+                        <label>Tipo de usuario</label>
+                        <select name="tipo_cliente" required id="tipo-cliente">
                             <option value="individual" {{ old('tipo_cliente') == 'individual' ? 'selected' : '' }}>Individual</option>
                             <option value="empresa" {{ old('tipo_cliente') == 'empresa' ? 'selected' : '' }}>Empresa</option>
                         </select>
                     </div>
 
                     <div id="empresa-extra" class="{{ old('tipo_cliente') == 'empresa' ? '' : 'hidden' }} space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">RUC de la empresa</label>
-                            <input type="text" name="ruc" value="{{ old('ruc') }}"
-                                   class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <div class="form-field">
+                            <label>RUC de la empresa</label>
+                            <input type="text" name="ruc" value="{{ old('ruc') }}">
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Nombre de la empresa</label>
-                            <input type="text" name="nombre_empresa" value="{{ old('nombre_empresa') }}"
-                                   class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <div class="form-field">
+                            <label>Nombre de la empresa</label>
+                            <input type="text" name="nombre_empresa" value="{{ old('nombre_empresa') }}">
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Correo electrónico</label>
-                        <input type="email" name="email" value="{{ old('email') }}" required
-                               class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50">
+                    <div class="form-field">
+                        <label>Correo electrónico</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required>
                         @error('email')
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Contraseña</label>
-                            <input type="password" name="password" required
-                                   class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50">
+                        <div class="form-field">
+                            <label>Contraseña</label>
+                            <input type="password" name="password" required>
                             @error('password')
                                 <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Confirmar contraseña</label>
-                            <input type="password" name="password_confirmation" required
-                                   class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <div class="form-field">
+                            <label>Confirmar contraseña</label>
+                            <input type="password" name="password_confirmation" required>
                         </div>
                     </div>
 
-                    <button type="submit"
-                            class="w-full py-2.5 rounded-xl bg-green-700 text-white text-sm font-semibold shadow-md hover:bg-green-800 transition">
+                    <button type="submit" class="btn-brand w-full justify-center text-sm">
                         Crear cuenta
                     </button>
                 </form>
@@ -93,7 +85,7 @@
 
             <p class="text-center text-xs text-gray-600 mt-4 md:text-left">
                 ¿Ya tienes cuenta?
-                <a href="{{ route('login') }}" class="text-green-700 font-semibold hover:underline">Ingresar</a>
+                <a href="{{ route('login') }}" class="text-green-700 font-semibold">Ingresar</a>
             </p>
         </div>
     </div>
@@ -101,10 +93,10 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const select = document.querySelector('select[name="tipo_cliente"]');
+        const select = document.getElementById('tipo-cliente');
         const empresaExtra = document.getElementById('empresa-extra');
 
-        if (select) {
+        if (select && empresaExtra) {
             select.addEventListener('change', () => {
                 if (select.value === 'empresa') {
                     empresaExtra.classList.remove('hidden');

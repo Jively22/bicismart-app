@@ -190,7 +190,6 @@
                 <div class="hidden md:flex items-center gap-2">
                     <a href="{{ route('home') }}" class="btn-ghost text-sm">Home</a>
                     <a href="{{ route('bicicletas.catalogo') }}" class="btn-ghost text-sm">Bicicletas</a>
-                    <a href="{{ route('accesorios.index') }}" class="btn-ghost text-sm">Accesorios</a>
                     <a href="{{ route('mantenimientos.public') }}" class="btn-ghost text-sm">Mantenimientos</a>
                     <a href="{{ route('cart.index') }}" class="btn-ghost text-sm">Carrito</a>
                     @auth
@@ -224,7 +223,6 @@
                 <div class="flex flex-col gap-2 text-sm">
                     <a href="{{ route('home') }}" class="btn-ghost w-full justify-start">Home</a>
                     <a href="{{ route('bicicletas.catalogo') }}" class="btn-ghost w-full justify-start">Bicicletas</a>
-                    <a href="{{ route('accesorios.index') }}" class="btn-ghost w-full justify-start">Accesorios</a>
                     <a href="{{ route('mantenimientos.public') }}" class="btn-ghost w-full justify-start">Mantenimientos</a>
                     <a href="{{ route('cart.index') }}" class="btn-ghost w-full justify-start">Carrito</a>
                     @auth
@@ -261,43 +259,19 @@
         </div>
     </main>
 
-    <footer class="mt-12 border-t border-green-100/70 bg-white/80 backdrop-blur">
-        <div class="page-shell py-8 grid md:grid-cols-4 gap-6 text-sm text-gray-600">
-            <div class="space-y-2">
-                <div class="flex items-center gap-2">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-green-600 via-emerald-500 to-lime-400 flex items-center justify-center text-white font-bold">B</div>
-                    <div>
-                        <p class="font-bold text-gray-900">BiciSmart</p>
-                        <p class="text-xs text-gray-500">Movilidad sostenible</p>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-500">Venta y alquiler de bicicletas, mantenimientos y accesorios para tu día a día.</p>
-            </div>
+    <footer class="mt-12 border-t border-green-100/70 bg-white/70 backdrop-blur">
+        <div class="page-shell py-6 flex flex-col sm:flex-row justify-between gap-3 text-sm text-gray-600">
             <div>
-                <p class="font-semibold text-gray-800 mb-2">Explora</p>
-                <div class="flex flex-col gap-1">
-                    <a href="{{ route('bicicletas.catalogo') }}" class="hover:text-green-700">Catálogo de bicicletas</a>
-                    <a href="{{ route('accesorios.index') }}" class="hover:text-green-700">Accesorios y repuestos</a>
-                    <a href="{{ route('mantenimientos.public') }}" class="hover:text-green-700">Servicios de mantenimiento</a>
-                    <a href="{{ route('cart.index') }}" class="hover:text-green-700">Carrito</a>
-                </div>
+                <p class="font-semibold text-gray-800">BiciSmart</p>
+                <p class="text-xs text-gray-500">Movilidad sostenible · Bicicletas · Alquiler · Mantenimiento</p>
             </div>
-            <div>
-                <p class="font-semibold text-gray-800 mb-2">Soporte</p>
-                <div class="flex flex-col gap-1">
-                    <span>Tel: +51 999 888 777</span>
-                    <span>Correo: soporte@bicismart.com</span>
-                    <span>Horario: Lun-Sab 8am - 8pm</span>
-                </div>
+            <div class="flex gap-2 text-xs text-gray-500">
+                <span class="badge-soft">Sostenible</span>
+                <span class="badge-soft">Venta y alquiler</span>
+                <span class="badge-soft">Servicios técnicos</span>
             </div>
-            <div>
-                <p class="font-semibold text-gray-800 mb-2">Conecta</p>
-                <div class="flex gap-2 text-xs text-gray-500">
-                    <span class="badge-soft">Sostenible</span>
-                    <span class="badge-soft">Tech</span>
-                    <span class="badge-soft">Seguridad</span>
-                </div>
-                <p class="text-xs text-gray-500 mt-3">© {{ date('Y') }} BiciSmart. Todos los derechos reservados.</p>
+            <div class="text-xs text-gray-500">
+                © {{ date('Y') }} Todos los derechos reservados
             </div>
         </div>
     </footer>
@@ -315,3 +289,4 @@
     </script>
 </body>
 </html>
+

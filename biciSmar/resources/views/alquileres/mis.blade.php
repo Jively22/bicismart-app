@@ -1,39 +1,34 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">Mis alquileres</h1>
+<div class="mb-4">
+    <span class="pill mb-2 inline-flex">Mis alquileres</span>
+    <h1 class="text-3xl font-extrabold text-gray-900">Historial de alquileres</h1>
+    <p class="text-sm text-gray-600">Seguimiento de tus reservas individuales o corporativas.</p>
+</div>
 
-<table class="w-full text-xs bg-white/90 rounded-3xl shadow-md border border-gray-100 overflow-hidden">
-    <thead class="bg-gray-50">
-        <tr>
-            <th class="px-3 py-2 text-left">Bicicleta</th>
-            <th class="px-3 py-2 text-left">Tipo</th>
-            <th class="px-3 py-2 text-left">Cantidad</th>
-            <th class="px-3 py-2 text-left">Inicio</th>
-            <th class="px-3 py-2 text-left">Fin</th>
-            <th class="px-3 py-2 text-left">Entrega</th>
-            <th class="px-3 py-2 text-left">Pago</th>
-            <th class="px-3 py-2 text-left">Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($alquileres as $alquiler)
-            <tr class="border-t">
-                <td class="px-3 py-2">{{ $alquiler->bicicleta->nombre ?? 'N/A' }}</td>
-                <td class="px-3 py-2 capitalize">{{ $alquiler->tipo_cliente }}</td>
-                <td class="px-3 py-2">{{ $alquiler->cantidad ?? 1 }}</td>
-                <td class="px-3 py-2">{{ $alquiler->fecha_inicio }}</td>
-                <td class="px-3 py-2">{{ $alquiler->fecha_fin }}</td>
-                <td class="px-3 py-2">
-                    {{ $alquiler->modo_entrega === 'entregar' ? 'Entrega' : 'Recoge' }}
-                    @if($alquiler->direccion_entrega)
-                        <div class="text-[11px] text-gray-500">{{ $alquiler->direccion_entrega }}</div>
-                    @endif
-                </td>
-                <td class="px-3 py-2 capitalize">{{ str_replace('_', ' ', $alquiler->metodo_pago) }}</td>
-                <td class="px-3 py-2">S/ {{ number_format($alquiler->precio_total, 2) }}</td>
+<div class="table-shell bg-white/90">
+    <table class="text-sm">
+        <thead>
+            <tr>
+                <th>Fecha inicio</th>
+                <th>Fecha fin</th>
+                <th>Modo entrega</th>
+                <th>Estado</th>
+                <th>Total</th>
             </tr>
-        @endforeach
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach($alquileres as $alquiler)
+                <tr>
+                    <td>{{ $alquiler->fecha_inicio }}</td>
+                    <td>{{ $alquiler->fecha_fin }}</td>
+                    <td>{{ $alquiler->modo_entrega === 'entregar' ? 'Entrega' : 'Recoge' }}</td>
+                    <td>{{ ucfirst($alquiler->estado ?? 'pendiente') }}</td>
+                    <td>S/ {{ number_format($alquiler->precio_total, 2) }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 @endsection

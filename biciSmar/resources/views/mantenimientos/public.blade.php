@@ -1,29 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">Servicios de mantenimiento</h1>
+<div class="mb-4">
+    <span class="pill mb-2 inline-flex">Mantenimiento</span>
+    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900">Servicios de mantenimiento</h1>
+    <p class="text-sm text-gray-600">Aliados, técnicos internos y externos listos para mantener tus bicicletas y flotas.</p>
+</div>
 
 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
     @foreach($mantenimientos as $m)
-        <div class="bg-white/90 rounded-3xl shadow-md border border-gray-100 p-4 flex flex-col justify-between">
+        <div class="surface-card border border-green-50 p-4 flex flex-col justify-between">
             <div>
                 <p class="text-xs uppercase text-gray-500 mb-1">{{ strtoupper($m->tipo_servicio) }}</p>
-                <h2 class="font-bold text-sm text-gray-900 mb-1">{{ $m->nombre }}</h2>
-                <p class="text-[11px] text-gray-600 mb-2">{{ $m->descripcion }}</p>
+                <h2 class="font-bold text-base text-gray-900 mb-1">{{ $m->nombre }}</h2>
+                <p class="text-xs text-gray-600 mb-2">{{ $m->descripcion }}</p>
+                @if($m->proveedor)
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-100">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                        Asociado externo: {{ $m->proveedor }}
+                    </span>
+                @else
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold bg-green-50 text-green-700 border border-green-100">
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                        Técnico oficial BiciSmart
+                    </span>
+                @endif
             </div>
             <div class="flex items-center justify-between">
                 <p class="text-sm font-semibold text-green-700">S/ {{ number_format($m->precio, 2) }}</p>
-                <p class="text-[10px] text-gray-500">{{ $m->proveedor }}</p>
             </div>
             <div class="mt-3">
                 @auth
                     <a href="{{ route('mantenimientos.solicitar', $m) }}"
-                       class="inline-block w-full text-center bg-green-700 text-white text-sm font-semibold px-3 py-2 rounded-lg hover:bg-green-800">
+                       class="btn-brand w-full justify-center text-sm py-2.5">
                         Solicitar este servicio
                     </a>
                 @else
                     <a href="{{ route('login') }}"
-                       class="inline-block w-full text-center bg-gray-200 text-gray-700 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-gray-300">
+                       class="btn-ghost w-full justify-center text-sm py-2.5">
                         Inicia sesión para solicitar
                     </a>
                 @endauth
