@@ -3,8 +3,18 @@
 @section('content')
 <div class="grid md:grid-cols-[1.1fr,1fr] gap-8 items-start">
     <div class="surface-card rounded-3xl border border-green-100 overflow-hidden">
-        @if($accesory->foto)
-            <img src="{{ asset('storage/'.$accesory->foto) }}" class="w-full h-72 object-cover">
+        @php
+            $fotoUrl = null;
+            if ($accesory->foto) {
+                $fotoUrl = \Illuminate\Support\Facades\Storage::disk('public')->exists($accesory->foto)
+                    ? \Illuminate\Support\Facades\Storage::url($accesory->foto)
+                    : (\Illuminate\Support\Str::startsWith($accesory->foto, ['http','https','/'])
+                        ? $accesory->foto
+                        : asset($accesory->foto));
+            }
+        @endphp
+        @if($fotoUrl)
+            <img src="{{ $fotoUrl }}" class="w-full h-72 object-cover">
         @else
             <div class="w-full h-72 bg-gradient-to-r from-green-600 to-emerald-400 flex items-center justify-center text-white text-sm">
                 Sin imagen

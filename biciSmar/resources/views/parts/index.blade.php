@@ -45,8 +45,18 @@
     @foreach($items as $item)
         <div class="surface-card border border-green-50 overflow-hidden flex flex-col hover:shadow-xl transition">
             <div class="relative">
-                @if($item->foto)
-                    <img src="{{ asset('storage/'.$item->foto) }}" alt="{{ $item->nombre }}" class="w-full h-44 object-cover">
+                @php
+                    $fotoUrl = null;
+                    if ($item->foto) {
+                        $fotoUrl = \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto)
+                            ? \Illuminate\Support\Facades\Storage::url($item->foto)
+                            : (\Illuminate\Support\Str::startsWith($item->foto, ['http','https','/'])
+                                ? $item->foto
+                                : asset($item->foto));
+                    }
+                @endphp
+                @if($fotoUrl)
+                    <img src="{{ $fotoUrl }}" alt="{{ $item->nombre }}" class="w-full h-44 object-cover">
                 @else
                     <div class="w-full h-44 bg-gradient-to-r from-green-600 to-emerald-400 flex items-center justify-center text-white text-sm">
                         Sin imagen

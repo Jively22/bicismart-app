@@ -32,15 +32,15 @@
                     <h3 class="text-sm font-semibold text-gray-800 mb-2">Bicicletas</h3>
                     @foreach($bicicletas as $bici)
                         <div class="flex items-center border-b last:border-b-0 border-gray-100 py-3">
-                            <div class="w-16 h-16 rounded-2xl bg-gray-100 overflow-hidden mr-3">
-                                @if($bici->foto)
-                                    <img src="{{ asset('storage/'.$bici->foto) }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-[10px] text-gray-500">
-                                        Sin imagen
-                                    </div>
-                                @endif
+                    <div class="w-16 h-16 rounded-2xl bg-gray-100 overflow-hidden mr-3">
+                        @if($bici->foto)
+                            <img src="{{ asset('storage/'.$bici->foto) }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-[10px] text-gray-500">
+                                Sin imagen
                             </div>
+                        @endif
+                    </div>
                             <div class="flex-1">
                                 <p class="text-sm font-semibold text-gray-900">{{ $bici->nombre }}</p>
                                 <p class="text-[11px] text-gray-500">
@@ -73,9 +73,19 @@
                     <h3 class="text-sm font-semibold text-gray-800 mb-2">Accesorios</h3>
                     @foreach($accesories as $acc)
                         <div class="flex items-center border-b last:border-b-0 border-gray-100 py-3">
+                            @php
+                                $fotoAcc = null;
+                                if ($acc->foto) {
+                                    $fotoAcc = \Illuminate\Support\Facades\Storage::disk('public')->exists($acc->foto)
+                                        ? \Illuminate\Support\Facades\Storage::url($acc->foto)
+                                        : (\Illuminate\Support\Str::startsWith($acc->foto, ['http','https','/'])
+                                            ? $acc->foto
+                                            : asset($acc->foto));
+                                }
+                            @endphp
                             <div class="w-16 h-16 rounded-2xl bg-gray-100 overflow-hidden mr-3">
-                                @if($acc->foto)
-                                    <img src="{{ asset('storage/'.$acc->foto) }}" class="w-full h-full object-cover">
+                                @if($fotoAcc)
+                                    <img src="{{ $fotoAcc }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-[10px] text-gray-500">
                                         Sin imagen
