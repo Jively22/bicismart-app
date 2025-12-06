@@ -3,7 +3,7 @@
 @section('content')
 <h1 class="text-3xl font-bold text-green-700 mb-6">Nuevo servicio de mantenimiento</h1>
 
-<form action="{{ route('mantenimientos.store') }}" method="POST"
+<form action="{{ route('admin.mantenimientos.store') }}" method="POST"
       class="bg-white rounded shadow p-6 max-w-xl">
     @csrf
 
@@ -31,8 +31,8 @@
     </div>
 
     <div class="mb-4">
-        <label class="font-semibold">Técnico</label>
-        <input type="text" name="tecnico" class="w-full border rounded px-3 py-2" required>
+        <label class="font-semibold">Proveedor (opcional)</label>
+        <input type="text" name="proveedor" class="w-full border rounded px-3 py-2" placeholder="Nombre del proveedor externo">
     </div>
 
     <button class="bg-green-600 text-white px-4 py-2 rounded">Guardar</button>

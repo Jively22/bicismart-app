@@ -3,7 +3,7 @@
 @section('content')
 <h1 class="text-3xl font-bold text-green-700 mb-6">Nueva Bicicleta</h1>
 
-<form action="{{ route('bicicletas.store') }}" method="POST" enctype="multipart/form-data"
+<form action="{{ route('admin.bicicletas.store') }}" method="POST" enctype="multipart/form-data"
       class="bg-white rounded shadow p-6 max-w-xl">
     @csrf
 

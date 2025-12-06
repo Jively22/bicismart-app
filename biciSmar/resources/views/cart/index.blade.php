@@ -3,6 +3,12 @@
 @section('content')
 <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">Carrito de compras</h1>
 
+@if($errors->has('checkout'))
+    <div class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-2xl mb-4">
+        {{ $errors->first('checkout') }}
+    </div>
+@endif
+
 @if(empty($cart))
     <div class="bg-white/90 rounded-3xl shadow-md border border-gray-100 p-6 text-center">
         <p class="text-sm text-gray-700 mb-2">Tu carrito está vacío.</p>

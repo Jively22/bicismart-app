@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mantenimiento;
+use App\Models\MantenimientoSolicitud;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class MantenimientoController extends Controller
 {
@@ -27,6 +27,37 @@ class MantenimientoController extends Controller
         return view('mantenimientos.mis', compact('mantenimientos'));
     }
 
+    public function solicitarForm(Mantenimiento $mantenimiento)
+    {
+        return view('mantenimientos.solicitar', compact('mantenimiento'));
+    }
+
+    public function enviarSolicitud(Request $request, Mantenimiento $mantenimiento)
+    {
+        $data = $request->validate([
+            'tipo_objetivo'   => 'required|in:bicicleta,flota',
+            'nombre_objetivo' => 'required|string|max:255',
+            'cantidad'        => 'required|integer|min:1',
+            'notas'           => 'nullable|string',
+        ]);
+
+        if (!$request->user()) {
+            abort(403);
+        }
+
+        MantenimientoSolicitud::create([
+            'user_id'          => $request->user()->id,
+            'mantenimiento_id' => $mantenimiento->id,
+            'tipo_objetivo'    => $data['tipo_objetivo'],
+            'nombre_objetivo'  => $data['nombre_objetivo'],
+            'cantidad'         => $data['cantidad'],
+            'notas'            => $data['notas'] ?? null,
+        ]);
+
+        return redirect()->route('mantenimientos.public')
+            ->with('success', 'Solicitud de mantenimiento registrada correctamente.');
+    }
+
     public function create()
     {
         return view('mantenimientos.create');
@@ -44,7 +75,7 @@ class MantenimientoController extends Controller
 
         Mantenimiento::create($data);
 
-        return redirect()->route('mantenimientos.index')->with('success', 'Servicio creado correctamente.');
+        return redirect()->route('admin.mantenimientos.index')->with('success', 'Servicio creado correctamente.');
     }
 
     public function edit(Mantenimiento $mantenimiento)
@@ -64,13 +95,13 @@ class MantenimientoController extends Controller
 
         $mantenimiento->update($data);
 
-        return redirect()->route('mantenimientos.index')->with('success', 'Servicio actualizado correctamente.');
+        return redirect()->route('admin.mantenimientos.index')->with('success', 'Servicio actualizado correctamente.');
     }
 
     public function destroy(Mantenimiento $mantenimiento)
     {
         $mantenimiento->delete();
 
-        return redirect()->route('mantenimientos.index')->with('success', 'Servicio eliminado correctamente.');
+        return redirect()->route('admin.mantenimientos.index')->with('success', 'Servicio eliminado correctamente.');
     }
 }

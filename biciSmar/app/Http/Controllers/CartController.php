@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -64,28 +65,59 @@ class CartController extends Controller
             return back()->with('success', 'Tu carrito está vacío.');
         }
 
-        $user = Auth::user();
-        $ids = array_keys($cart);
-        $bicicletas = Bicicleta::whereIn('id', $ids)->get();
+        try {
+            DB::transaction(function () use ($cart) {
+                $user = Auth::user();
+                $ids = array_keys($cart);
 
-        $total = 0;
-        foreach ($bicicletas as $bici) {
-            $total += ($bici->precio_venta ?? 0) * $cart[$bici->id];
-        }
+                // Bloquea los registros para evitar carreras de stock
+                $bicicletas = Bicicleta::whereIn('id', $ids)
+                    ->lockForUpdate()
+                    ->get();
 
-        $order = Order::create([
-            'user_id' => $user->id,
-            'total' => $total,
-        ]);
+                if ($bicicletas->count() !== count($cart)) {
+                    throw new \RuntimeException('Algunas bicicletas ya no están disponibles.');
+                }
 
-        foreach ($bicicletas as $bici) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'bicicleta_id' => $bici->id,
-                'cantidad' => $cart[$bici->id],
-                'precio_unitario' => $bici->precio_venta ?? 0,
-                'subtotal' => ($bici->precio_venta ?? 0) * $cart[$bici->id],
-            ]);
+                $total = 0;
+
+                foreach ($bicicletas as $bici) {
+                    $cantidad = $cart[$bici->id];
+                    $precioUnitario = $bici->precio_venta ?? 0;
+
+                    if ($precioUnitario <= 0) {
+                        throw new \RuntimeException('Hay bicicletas sin precio de venta configurado.');
+                    }
+
+                    if (($bici->estado !== 'disponible') || ($bici->stock < $cantidad)) {
+                        throw new \RuntimeException("Stock insuficiente o no disponible: {$bici->nombre}");
+                    }
+
+                    $total += $precioUnitario * $cantidad;
+                }
+
+                $order = Order::create([
+                    'user_id' => $user->id,
+                    'total' => $total,
+                ]);
+
+                foreach ($bicicletas as $bici) {
+                    $cantidad = $cart[$bici->id];
+                    $precioUnitario = $bici->precio_venta ?? 0;
+
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'bicicleta_id' => $bici->id,
+                        'cantidad' => $cantidad,
+                        'precio_unitario' => $precioUnitario,
+                        'subtotal' => $precioUnitario * $cantidad,
+                    ]);
+
+                    $bici->decrement('stock', $cantidad);
+                }
+            });
+        } catch (\Throwable $e) {
+            return back()->withErrors(['checkout' => $e->getMessage()]);
         }
 
         session()->forget('cart');

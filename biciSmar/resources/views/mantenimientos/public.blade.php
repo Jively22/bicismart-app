@@ -15,6 +15,19 @@
                 <p class="text-sm font-semibold text-green-700">S/ {{ number_format($m->precio, 2) }}</p>
                 <p class="text-[10px] text-gray-500">{{ $m->proveedor }}</p>
             </div>
+            <div class="mt-3">
+                @auth
+                    <a href="{{ route('mantenimientos.solicitar', $m) }}"
+                       class="inline-block w-full text-center bg-green-700 text-white text-sm font-semibold px-3 py-2 rounded-lg hover:bg-green-800">
+                        Solicitar este servicio
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="inline-block w-full text-center bg-gray-200 text-gray-700 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-gray-300">
+                        Inicia sesión para solicitar
+                    </a>
+                @endauth
+            </div>
         </div>
     @endforeach
 </div>

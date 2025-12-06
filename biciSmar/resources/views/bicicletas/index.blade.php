@@ -3,7 +3,7 @@
 @section('content')
 <h1 class="text-3xl font-bold text-green-700 mb-6">Administrar Bicicletas</h1>
 
-<a href="{{ route('bicicletas.create') }}"
+<a href="{{ route('admin.bicicletas.create') }}"
    class="bg-green-600 text-white px-4 py-2 rounded mb-4 inline-block">
    + Nueva bicicleta
 </a>
@@ -40,8 +40,8 @@
                     @endif
                 </td>
                 <td class="px-4 py-2 space-x-2">
-                    <a href="{{ route('bicicletas.edit', $bici->id) }}" class="text-blue-600">Editar</a>
-                    <form action="{{ route('bicicletas.destroy', $bici->id) }}" method="POST" class="inline">
+                    <a href="{{ route('admin.bicicletas.edit', $bici->id) }}" class="text-blue-600">Editar</a>
+                    <form action="{{ route('admin.bicicletas.destroy', $bici->id) }}" method="POST" class="inline">
                         @csrf
                         @method('DELETE')
                         <button class="text-red-600" onclick="return confirm('¿Eliminar bicicleta?')">Eliminar</button>

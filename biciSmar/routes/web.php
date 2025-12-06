@@ -35,6 +35,14 @@ Route::get('/bicicletas/{bicicleta}', [BicicletaController::class, 'showPublic']
 // Mantenimientos públicos
 Route::get('/mantenimientos', [MantenimientoController::class, 'indexPublic'])->name('mantenimientos.public');
 
+// Formulario de solicitud de mantenimiento
+Route::middleware('auth')->group(function () {
+    Route::get('/mantenimientos/solicitar/{mantenimiento}', [MantenimientoController::class, 'solicitarForm'])
+        ->name('mantenimientos.solicitar');
+    Route::post('/mantenimientos/solicitar/{mantenimiento}', [MantenimientoController::class, 'enviarSolicitud'])
+        ->name('mantenimientos.enviar');
+});
+
 // Carrito
 Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
 Route::post('/carrito/agregar/{bicicleta}', [CartController::class, 'add'])->name('cart.add');
@@ -116,8 +124,9 @@ Route::middleware('auth')->group(function () {
         Route::prefix('admin')->name('admin.')->group(function () {
 
             Route::resource('bicicletas', BicicletaController::class)->except(['show']);
-            Route::resource('alquileres', AlquilerController::class)->except(['show', 'create', 'store']);
+            Route::resource('alquileres', AlquilerController::class)->except(['show']);
             Route::resource('mantenimientos', MantenimientoController::class);
+            Route::get('alquileres-historial', [AlquilerController::class, 'historialAdmin'])->name('alquileres.historial');
 
             /*
             |--------------------------------------------------------------------------

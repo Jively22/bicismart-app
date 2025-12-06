@@ -32,6 +32,8 @@
             </div>
 
             <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <a href="{{ route('home') }}"
+                   class="text-gray-100 hover:text-white transition">Home</a>
                 <a href="{{ route('bicicletas.catalogo') }}"
                    class="text-gray-100 hover:text-white transition">Bicicletas</a>
                 <a href="{{ route('mantenimientos.public') }}"

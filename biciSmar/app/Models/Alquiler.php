@@ -17,6 +17,10 @@ class Alquiler extends Model
         'tipo_cliente',
         'fecha_inicio',
         'fecha_fin',
+        'cantidad',
+        'modo_entrega',
+        'direccion_entrega',
+        'metodo_pago',
         'precio_total',
         'observaciones',
     ];

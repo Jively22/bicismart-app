@@ -3,7 +3,7 @@
 @section('content')
 <h1 class="text-3xl font-bold text-green-700 mb-6">Editar Bicicleta</h1>
 
-<form action="{{ route('bicicletas.update', $bicicleta->id) }}" method="POST" enctype="multipart/form-data"
+<form action="{{ route('admin.bicicletas.update', $bicicleta->id) }}" method="POST" enctype="multipart/form-data"
       class="bg-white rounded shadow p-6 max-w-xl">
     @csrf
     @method('PUT')
@@ -55,13 +55,14 @@
     </div>
 
     <div class="mb-4">
-        <label class="font-semibold">Foto actual</label><br>
+        <label class="font-semibold">Foto</label><br>
         @if($bicicleta->foto)
-            <img src="{{ asset('storage/'.$bicicleta->foto) }}" class="w-40 h-24 object-cover rounded mb-2">
+            <img src="{{ asset('storage/'.$bicicleta->foto) }}" class="w-40 h-24 object-cover rounded mb-2" alt="Foto actual de {{ $bicicleta->nombre }}">
         @else
             <span class="text-gray-500">Sin imagen</span>
         @endif
         <input type="file" name="foto" class="w-full">
+        <p class="text-xs text-gray-500 mt-1">Puedes subir una nueva imagen para reemplazar la actual.</p>
     </div>
 
     <button class="bg-green-600 text-white px-4 py-2 rounded">Actualizar</button>
